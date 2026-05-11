@@ -29,11 +29,21 @@ def cli():
 @click.option("--judge/--no-judge", default=False, help="Enable LLM answerer + judge pipeline (requires API key)")
 @click.option("--answerer-model", default="openai/gpt-4o-mini", help="Answerer LLM model ID")
 @click.option("--judge-model", default="openai/gpt-4o-mini", help="Judge LLM model ID")
-def run(adapter, benchmark, out, key, max_items, judge, answerer_model, judge_model):
+@click.option("--adapter-config", default=None, help="JSON string of adapter configuration (e.g., '{\"endpoint\": \"...\"}')")
+def run(adapter, benchmark, out, key, max_items, judge, answerer_model, judge_model, adapter_config):
     """Run a benchmark against a memory system adapter."""
+    # Parse adapter config JSON
+    parsed_adapter_config = None
+    if adapter_config:
+        try:
+            parsed_adapter_config = json.loads(adapter_config)
+        except json.JSONDecodeError as exc:
+            click.echo(click.style(f"Invalid --adapter-config JSON: {exc}", fg="red"), err=True)
+            sys.exit(1)
+
     # Resolve adapter
     try:
-        adapter_instance = get_adapter(adapter)
+        adapter_instance = get_adapter(adapter, adapter_config=parsed_adapter_config)
     except ValueError as exc:
         click.echo(click.style(f"Error: {exc}", fg="red"), err=True)
         sys.exit(1)

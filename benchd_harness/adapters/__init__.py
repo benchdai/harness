@@ -100,8 +100,13 @@ try:
 except ImportError:
     pass
 
+from .mcp_adapter import MCPAdapter
 
-def get_adapter(name: str) -> BaseAdapter:
+_BUILTIN_ADAPTERS["mcp"] = MCPAdapter
+__all__ = [*__all__, "MCPAdapter"]
+
+
+def get_adapter(name: str, adapter_config: dict | None = None) -> BaseAdapter:
     """
     Factory function that returns an adapter instance by name.
 
@@ -181,4 +186,9 @@ def get_adapter(name: str) -> BaseAdapter:
         raise ValueError(
             f"Unknown adapter {name!r}. Available adapters: {available}"
         )
+    # Pass adapter_config to adapters that accept it
+    import inspect
+    sig = inspect.signature(cls.__init__)
+    if "adapter_config" in sig.parameters:
+        return cls(adapter_config=adapter_config)
     return cls()

@@ -1,0 +1,393 @@
+Failed to load spaCy lemma model: spaCy is not installed. Install it with: pip install mem0ai[nlp]
+fastembed not installed — BM25 keyword search disabled. Install with: pip install fastembed
+Failed to load spaCy full model: spaCy is not installed. Install it with: pip install mem0ai[nlp]
+
+============================================================
+  Bench'd Harness v0.1.0
+  Run:       run_5f8cac732bcf
+  Benchmark: LongMemEval (1.0)
+  Adapter:   mem0-local
+  Questions: 500
+  Scoring:   full pipeline (answerer + judge)
+============================================================
+
+  [  1/500] temporal   What was the first issue I had with my new car after...   FAIL
+  [  2/500] temporal   Which event did I attend first, the 'Effective Time ...   FAIL
+  [  3/500] temporal   Which vehicle did I take care of first in February, ...   PASS
+  [  4/500] temporal   Which device did I got first, the Samsung Galaxy S22...   PASS
+  [  5/500] temporal   How many days before the team meeting I was preparin...   PASS
+  [  6/500] temporal   How many days had passed between the Sunday mass at ...   FAIL
+  [  7/500] temporal   How many days did it take for me to find a house I l...   PASS
+  [  8/500] temporal   Which seeds were started first, the tomatoes or the ...   FAIL
+  [  9/500] temporal   How many days had passed between the Hindu festival ...   FAIL
+  [ 10/500] temporal   How many days before the 'Rack Fest' did I participa...   FAIL
+  [ 11/500] temporal   Which pair of shoes did I clean last month?               FAIL
+  [ 12/500] temporal   Which event happened first, the purchase of the coff...   FAIL
+  [ 13/500] temporal   How many days had passed between the 'Walk for Hunge...   FAIL
+  [ 14/500] temporal   Which item did I purchase first, the dog bed for Max...   FAIL
+  [ 15/500] temporal   Which task did I complete first, fixing the fence or...   FAIL
+  [ 16/500] temporal   How many charity events did I participate in before ...   FAIL
+  [ 17/500] temporal   How long have I been working before I started my cur...   FAIL
+  [ 18/500] temporal   Which book did I finish reading first, 'The Hate U G...   FAIL
+  [ 19/500] temporal   Which device did I set up first, the smart thermosta...   FAIL
+  [ 20/500] temporal   How many months ago did I book the Airbnb in San Fra...   FAIL
+  [ 21/500] temporal   How long did I take to finish 'The Seven Husbands of...   FAIL
+  [ 22/500] temporal   What was the date on which I attended the first BBQ ...   PASS
+  [ 23/500] temporal   How many days before I bought the iPhone 13 Pro did ...   FAIL
+  [ 24/500] temporal   Which show did I start watching first, 'The Crown' o...   FAIL
+  [ 25/500] temporal   How long had I been a member of 'Book Lovers Unite' ...   PASS
+  [ 26/500] temporal   How long had I been watching stand-up comedy special...   FAIL
+  [ 27/500] temporal   What time do I wake up on Tuesdays and Thursdays?         PASS
+  [ 28/500] temporal   How many days had passed since I bought my Adidas ru...   PASS
+  [ 29/500] temporal   Which event happened first, the road trip to the coa...   FAIL
+  [ 30/500] temporal   Which airline did I fly with the most in March and A...   PASS
+  [ 31/500] temporal   How long had I been bird watching when I attended th...   PASS
+  [ 32/500] temporal   Which trip did I take first, the one to Europe with ...   FAIL
+  [ 33/500] temporal   Which device did I set up first, the smart thermosta...   PASS
+  [ 34/500] temporal   Which health issue did I deal with first, the persis...   FAIL
+  [ 35/500] temporal   How old was I when I moved to the United States?          FAIL
+  [ 36/500] temporal   How long had I been using the new area rug when I re...   PASS
+  [ 37/500] temporal   How many days before my best friend's birthday party...   FAIL
+  [ 38/500] temporal   Which trip did the narrator take first, the solo tri...   FAIL
+  [ 39/500] temporal   How long did I use my new binoculars before I saw th...   FAIL
+  [ 40/500] temporal   Who did I meet first, Mark and Sarah or Tom?              FAIL
+  [ 41/500] temporal   How many weeks have I been accepted into the exchang...   FAIL
+  [ 42/500] temporal   Which group did I join first, 'Page Turners' or 'Mar...   FAIL
+  [ 43/500] temporal   How long had I been taking guitar lessons when I bou...   FAIL
+  [ 44/500] temporal   Which streaming service did I start using most recen...   FAIL
+  [ 45/500] temporal   How many months before my anniversary did Rachel get...   FAIL
+  [ 46/500] temporal   Which event happened first, the narrator losing thei...   PASS
+  [ 47/500] temporal   Who did I meet first, the woman selling jam at the f...   PASS
+  [ 48/500] temporal   Which event happened first, the meeting with Rachel ...   PASS
+  [ 49/500] temporal   Which gift did I buy first, the necklace for my sist...   PASS
+  [ 50/500] temporal   Which event did I participate in first, the volleyba...   FAIL
+  [ 51/500] temporal   Which event happened first, my attendance at a cultu...   PASS
+  [ 52/500] temporal   Which project did I start first, the Ferrari model o...   PASS
+  [ 53/500] temporal   Who became a parent first, Rachel or Alex?                FAIL
+  [ 54/500] temporal   How many days had passed between the day I bought a ...   FAIL
+  [ 55/500] temporal   Which task did I complete first, fixing the fence or...   FAIL
+  [ 56/500] temporal   How long have I been working before I started my cur...   FAIL
+  [ 57/500] temporal   When did I book the Airbnb in Sacramento?                 FAIL
+  [ 58/500] temporal   How many days before I bought my iPad did I attend t...   FAIL
+  [ 59/500] temporal   Which project did I start first, the Ferrari model o...   FAIL
+  [ 60/500] temporal   Who became a parent first, Tom or Alex?                   FAIL
+  [ 61/500] reasoning  How many items of clothing do I need to pick up or r...   FAIL
+  [ 62/500] reasoning  How many projects have I led or am currently leading?     FAIL
+  [ 63/500] reasoning  How many model kits have I worked on or bought?           FAIL
+  [ 64/500] reasoning  How many days did I spend on camping trips in the Un...   FAIL
+  [ 65/500] reasoning  How many weeks did it take me to watch all the Marve...   PASS
+  [ 66/500] reasoning  How many plants did I acquire in the last month?          FAIL
+  [ 67/500] reasoning  How much total money have I spent on bike-related ex...   FAIL
+  [ 68/500] reasoning  How many hours in total did I spend driving to my th...   FAIL
+  [ 69/500] reasoning  How many different doctors did I visit?                   FAIL
+  [ 70/500] reasoning  What time did I go to bed on the day before I had a ...   FAIL
+  [ 71/500] reasoning  How many different types of citrus fruits have I use...   FAIL
+  [ 72/500] reasoning  How many movie festivals that I attended?                 FAIL
+  [ 73/500] reasoning  How many days did I take social media breaks in total?    FAIL
+  [ 74/500] reasoning  How many tanks do I currently have, including the on...   FAIL
+  [ 75/500] reasoning  What is the total amount I spent on luxury items in ...   FAIL
+  [ 76/500] reasoning  How many hours have I spent playing games in total?       FAIL
+  [ 77/500] reasoning  How many weddings have I attended in this year?           FAIL
+  [ 78/500] reasoning  How many babies were born to friends and family memb...   FAIL
+  [ 79/500] reasoning  How many pieces of furniture did I buy, assemble, se...   FAIL
+  [ 80/500] reasoning  How many times did I bake something in the past two ...   FAIL
+  [ 81/500] reasoning  How many different museums or galleries did I visit ...   PASS
+  [ 82/500] reasoning  How many different cuisines have I learned to cook o...   FAIL
+  [ 83/500] reasoning  How many properties did I view before making an offe...   FAIL
+  [ 84/500] reasoning  How many different types of food delivery services h...   FAIL
+  [ 85/500] reasoning  How many hours of jogging and yoga did I do last week?    FAIL
+  [ 86/500] reasoning  Which social media platform did I gain the most foll...   FAIL
+  [ 87/500] reasoning  Which grocery store did I spend the most money at in...   FAIL
+  [ 88/500] reasoning  How much more did I spend on accommodations per nigh...   FAIL
+  [ 89/500] reasoning  How many different art-related events did I attend i...   FAIL
+  [ 90/500] reasoning  What is the average age of me, my parents, and my gr...   FAIL
+  [ 91/500] reasoning  How many doctor's appointments did I go to in March?      FAIL
+  [ 92/500] reasoning  How many days did it take for me to receive the new ...   PASS
+  [ 93/500] reasoning  How many health-related devices do I use in a day?        FAIL
+  [ 94/500] reasoning  How many fish are there in total in both of my aquar...   FAIL
+  [ 95/500] reasoning  How many fitness classes do I attend in a typical week?   FAIL
+  [ 96/500] reasoning  How many days did it take for my laptop backpack to ...   FAIL
+  [ 97/500] reasoning  How many pieces of jewelry did I acquire in the last...   FAIL
+  [ 98/500] reasoning  How much money did I raise in total through all the ...   FAIL
+  [ 99/500] reasoning  How many projects have I been working on simultaneou...   FAIL
+  [100/500] reasoning  How many musical instruments do I currently own?          FAIL
+  [101/500] reasoning  How many bikes did I service or plan to service in M...   FAIL
+  [102/500] reasoning  How much money did I raise for charity in total?          FAIL
+  [103/500] reasoning  How many days did I spend participating in faith-rel...   FAIL
+  [104/500] reasoning  How many kitchen items did I replace or fix?              FAIL
+  [105/500] reasoning  How many times did I ride rollercoasters across all ...   FAIL
+  [106/500] reasoning  How much total money did I spend on attending worksh...   FAIL
+  [107/500] reasoning  How many days did I spend in total traveling in Hawa...   FAIL
+  [108/500] reasoning  How many days did I spend attending workshops, lectu...   FAIL
+  [109/500] reasoning  How many rare items do I have in total?                   FAIL
+  [110/500] reasoning  What is the total amount of money I earned from sell...   FAIL
+  [111/500] reasoning  How many magazine subscriptions do I currently have?      FAIL
+  [112/500] reasoning  How many online courses have I completed in total?        PASS
+  [113/500] reasoning  How many music albums or EPs have I purchased or dow...   FAIL
+  [114/500] reasoning  How many years in total did I spend in formal educat...   FAIL
+  [115/500] reasoning  How many total pieces of writing have I completed si...   FAIL
+  [116/500] reasoning  How many graduation ceremonies have I attended in th...   FAIL
+  [117/500] reasoning  How many times did I bake egg tarts in the past two ...   FAIL
+  [118/500] reasoning  How many different museums or galleries did I visit ...   FAIL
+  [119/500] reasoning  How many fish are there in my 30-gallon tank?             FAIL
+  [120/500] reasoning  How many days did it take for my iPad case to arrive...   FAIL
+  [121/500] reasoning  How many days did I spend in total traveling in Hawa...   FAIL
+  [122/500] reasoning  How many years in total did I spend in formal educat...   FAIL
+  [123/500] temporal   What was my personal best time in the charity 5K run?     FAIL
+  [124/500] temporal   How many Korean restaurants have I tried in my city?      PASS
+  [125/500] temporal   Where did Rachel move to after her recent relocation?     PASS
+  [126/500] temporal   What was the amount I was pre-approved for when I go...   FAIL
+  [127/500] temporal   How often do I attend yoga classes to help with my a...   PASS
+  [128/500] temporal   Is my mom using the same grocery list method as me?       PASS
+  [129/500] temporal   How many hours have I spent on my abstract ocean scu...   PASS
+  [130/500] temporal   How many bikes do I currently own?                        PASS
+  [131/500] temporal   What day of the week do I take a cocktail-making class?   PASS
+  [132/500] temporal   Where did I go on my most recent family trip?             FAIL
+  [133/500] temporal   Where do I initially keep my old sneakers?                FAIL
+  [134/500] temporal   How many short stories have I written since I starte...   PASS
+  [135/500] temporal   How many pages of 'A Short History of Nearly Everyth...   FAIL
+  [136/500] temporal   How many engineers do I lead when I just started my ...   FAIL
+  [137/500] temporal   How many titles are currently on my to-watch list?        PASS
+  [138/500] temporal   How many stars do I need to reach the gold level on ...   PASS
+  [139/500] temporal   How long have I been using my Fitbit Charge 3?            PASS
+  [140/500] temporal   How many sessions of the bereavement support group d...   PASS
+  [141/500] temporal   What type of camera lens did I purchase most recently?    FAIL
+  [142/500] temporal   How often do I see my therapist, Dr. Smith?               PASS
+  [143/500] temporal   How many MCU films did I watch in the last 3 months?      PASS
+  [144/500] temporal   How many of Emma's recipes have I tried out?              FAIL
+  [145/500] temporal   What company is Rachel, an old colleague from my pre...   FAIL
+  [146/500] temporal   For the coffee-to-water ratio in my French press, di...   PASS
+  [147/500] temporal   Where is the painting 'Ethereal Dreams' by Emma Tayl...   PASS
+  [148/500] temporal   How many times have I worn my new black Converse Chu...   PASS
+  [149/500] temporal   How many episodes of the Science series have I compl...   PASS
+  [150/500] temporal   Do I go to the gym more frequently than I did previo...   FAIL
+  [151/500] temporal   How many new postcards have I added to my collection...   PASS
+  [152/500] temporal   How many videos of Corey Schafer's Python programmin...   FAIL
+  [153/500] temporal   How long have I been living in my current apartment ...   PASS
+  [154/500] temporal   What brand of BBQ sauce am I currently obsessed with?     PASS
+  [155/500] temporal   How long have my parents been staying with me in the...   PASS
+  [156/500] temporal   How long have I been sticking to my daily tidying ro...   PASS
+  [157/500] temporal   How long have I had my cat, Luna?                         PASS
+  [158/500] temporal   How many Instagram followers do I currently have?         PASS
+  [159/500] temporal   How many dozen eggs do we currently have stocked up ...   FAIL
+  [160/500] temporal   How many issues of National Geographic have I finish...   PASS
+  [161/500] temporal   Did I finish reading 'The Nightingale' by Kristin Ha...   PASS
+  [162/500] temporal   Where did I get my guitar serviced?                       FAIL
+  [163/500] temporal   What is my current highest score in Ticket to Ride?       PASS
+  [164/500] temporal   How many tops have I bought from H&M so far?              PASS
+  [165/500] temporal   How much did I earn at the Downtown Farmers Market o...   PASS
+  [166/500] temporal   How many times have I tried making a Negroni at home...   PASS
+  [167/500] temporal   What time do I usually go to the gym?                     PASS
+  [168/500] temporal   How many Crash Course videos have I watched in the p...   FAIL
+  [169/500] temporal   Where am I planning to stay for my birthday trip to ...   FAIL
+  [170/500] temporal   How many different species of birds have I seen in m...   PASS
+  [171/500] temporal   What was my previous frequent flyer status on United...   FAIL
+  [172/500] temporal   What was my previous personal best time for the char...   PASS
+  [173/500] temporal   How many autographed baseballs have I added to my co...   FAIL
+  [174/500] temporal   How often do I play tennis with my friends at the lo...   FAIL
+  [175/500] temporal   How much time do I dedicate to coding exercises each...   PASS
+  [176/500] temporal   What day of the week did I meet with my previous lan...   PASS
+  [177/500] temporal   How many pre-1920 American coins do I have in my col...   FAIL
+  [178/500] temporal   How many free night's stays can I redeem at any Hilt...   PASS
+  [179/500] temporal   How much weight have I lost since I started going to...   PASS
+  [180/500] temporal   How many followers do I have on Instagram now?            FAIL
+  [181/500] temporal   What is my current record in the recreational volley...   PASS
+  [182/500] temporal   How many projects have I completed since starting pa...   PASS
+  [183/500] temporal   What type of vehicle model am I currently working on?     FAIL
+  [184/500] temporal   What was my previous goal for my Apex Legends level ...   PASS
+  [185/500] temporal   How many largemouth bass did I catch with Alex on th...   FAIL
+  [186/500] temporal   What time do I wake up on Saturday mornings?              FAIL
+  [187/500] temporal   How many women are on the team led by my former mana...   FAIL
+  [188/500] temporal   Do I have a spare screwdriver for opening up my laptop?   PASS
+  [189/500] temporal   How many times have I met up with Alex from Germany?      PASS
+  [190/500] temporal   Did I mostly recently increase or decrease the limit...   FAIL
+  [191/500] temporal   How many trips have I taken my Canon EOS 80D camera on?   PASS
+  [192/500] temporal   What new kitchen gadget did I invest in before getti...   FAIL
+  [193/500] temporal   How many Italian restaurants have I tried in my city?     FAIL
+  [194/500] temporal   How many engineers do I lead when I just started my ...   FAIL
+  [195/500] temporal   How often do I see Dr. Johnson?                           FAIL
+  [196/500] temporal   How long have I been living in my current apartment ...   FAIL
+  [197/500] temporal   How many autographed football have I added to my col...   FAIL
+  [198/500] temporal   How often do I play table tennis with my friends at ...   FAIL
+  [199/500] temporal   Before I purchased the gravel bike, do I have other ...   PASS
+  [200/500] temporal   Where do I currently keep my old sneakers?                FAIL
+  [201/500] recall     Can you recommend some resources where I can learn m...   FAIL
+  [202/500] recall     Can you suggest some accessories that would compleme...   PASS
+  [203/500] recall     Can you recommend some recent publications or confer...   FAIL
+  [204/500] recall     Can you suggest a hotel for my upcoming trip to Miami?    FAIL
+  [205/500] recall     Can you recommend some interesting cultural events h...   FAIL
+  [206/500] recall     Can you recommend a show or movie for me to watch to...   FAIL
+  [207/500] recall     Can you suggest some activities that I can do in the...   FAIL
+  [208/500] recall     My kitchen's becoming a bit of a mess again. Any tip...   FAIL
+  [209/500] recall     I've been struggling with my slow cooker recipes. An...   FAIL
+  [210/500] recall     I've been thinking about ways to stay connected with...   PASS
+  [211/500] recall     What should I serve for dinner this weekend with my ...   FAIL
+  [212/500] recall     I've been feeling a bit stuck with my paintings late...   FAIL
+  [213/500] recall     I've been thinking about making a cocktail for an up...   PASS
+  [214/500] recall     I've been having trouble with the battery life on my...   FAIL
+  [215/500] recall     I've been feeling like my chocolate chip cookies nee...   FAIL
+  [216/500] recall     I'm thinking of inviting my colleagues over for a sm...   FAIL
+  [217/500] recall     I was thinking about rearranging the furniture in my...   FAIL
+  [218/500] recall     I'm getting excited about my visit to the music stor...   FAIL
+  [219/500] recall     I was thinking of trying a new coffee creamer recipe...   PASS
+  [220/500] recall     I've been sneezing quite a bit lately. Do you think ...   FAIL
+  [221/500] recall     I've been feeling nostalgic lately. Do you think it ...   FAIL
+  [222/500] recall     I'm trying to decide whether to buy a NAS device now...   FAIL
+  [223/500] recall     I am planning another theme park weekend; do you hav...   PASS
+  [224/500] recall     I'm planning my meal prep next week, any suggestions...   FAIL
+  [225/500] recall     I'm planning a trip to Denver soon. Any suggestions ...   FAIL
+  [226/500] recall     I've got some free time tonight, any documentary rec...   PASS
+  [227/500] recall     I noticed my bike seems to be performing even better...   PASS
+  [228/500] recall     Can you suggest some useful accessories for my phone?     PASS
+  [229/500] recall     Can you suggest some activities I can do during my c...   FAIL
+  [230/500] recall     I’m a bit anxious about getting around Tokyo. Do you...   FAIL
+  [231/500] recall     I'm checking our previous chat about the shift rotat...   FAIL
+  [232/500] recall     I'm planning to visit Bandung again and I was wonder...   FAIL
+  [233/500] recall     I'm going back to our previous conversation about th...   FAIL
+  [234/500] recall     I'm planning to revisit Orlando. I was wondering if ...   FAIL
+  [235/500] recall     Can you remind me of the name of the romantic Italia...   PASS
+  [236/500] recall     I remember you told me about the refining processes ...   FAIL
+  [237/500] recall     I'm planning my trip to Amsterdam again and I was wo...   FAIL
+  [238/500] recall     I think we discussed work from home jobs for seniors...   FAIL
+  [239/500] recall     In our previous chat, you suggested 'sexual compulsi...   PASS
+  [240/500] recall     I wanted to check back on our previous conversation ...   PASS
+  [241/500] recall     I wanted to follow up on our previous conversation a...   FAIL
+  [242/500] recall     I was thinking about our previous conversation about...   PASS
+  [243/500] recall     I wanted to follow up on our previous conversation a...   FAIL
+  [244/500] recall     I was looking back at our previous conversation abou...   FAIL
+  [245/500] recall     I'm going back to our previous chat about the Lost T...   PASS
+  [246/500] recall     I'm planning to go back to the Natural Park of Monca...   PASS
+  [247/500] recall     I was going through our previous conversation about ...   FAIL
+  [248/500] recall     I'm going back to our previous conversation about th...   PASS
+  [249/500] recall     I was thinking about our previous conversation about...   FAIL
+  [250/500] recall     I'm planning to visit the Vatican again and I was wo...   FAIL
+  [251/500] recall     I'm going back to our previous conversation about DI...   FAIL
+  [252/500] recall     I'm planning my trip to Speyer again and I wanted to...   FAIL
+  [253/500] recall     I was going through our previous chat and I wanted t...   FAIL
+  [254/500] recall     I was going through our previous conversation about ...   FAIL
+  [255/500] recall     I remember you provided a list of 100 prompt paramet...   FAIL
+  [256/500] recall     I'm looking back at our previous conversation about ...   PASS
+  [257/500] recall     I wanted to follow up on our previous conversation a...   FAIL
+  [258/500] recall     I'm looking back at our previous chess game and I wa...   FAIL
+  [259/500] recall     I was going through our previous conversation about ...   FAIL
+  [260/500] recall     I was going through our previous conversation about ...   FAIL
+  [261/500] recall     I'm planning another trip to New York City and I was...   PASS
+  [262/500] recall     I wanted to follow up on our previous conversation a...   FAIL
+  [263/500] recall     I was going through our previous conversation about ...   FAIL
+  [264/500] recall     I wanted to follow up on our previous conversation a...   FAIL
+  [265/500] recall     I was going through our previous chat. Can you remin...   FAIL
+  [266/500] recall     Can you remind me what was the average improvement i...   FAIL
+  [267/500] recall     I wanted to follow up on our previous conversation a...   FAIL
+  [268/500] recall     I'm looking back at our previous chat about the DHL ...   FAIL
+  [269/500] recall     I was going through our previous conversation and I ...   PASS
+  [270/500] recall     I wanted to follow up on our previous conversation a...   FAIL
+  [271/500] recall     I'm looking back at our previous conversation about ...   FAIL
+  [272/500] recall     I wanted to follow up on our previous conversation a...   FAIL
+  [273/500] recall     I was going through our previous chat and I was wond...   FAIL
+  [274/500] recall     I was looking back at our previous chat and I wanted...   PASS
+  [275/500] recall     I was thinking back to our previous conversation abo...   FAIL
+  [276/500] recall     I was looking back at our previous conversation abou...   FAIL
+  [277/500] recall     I'm trying to recall what the designation on my jump...   FAIL
+  [278/500] recall     I'm going back to our previous conversation about mu...   PASS
+  [279/500] recall     I'm looking back at our previous conversation about ...   PASS
+  [280/500] recall     I wanted to follow up on our previous conversation a...   FAIL
+  [281/500] recall     I'm looking back at our previous conversation where ...   FAIL
+  [282/500] recall     I'm going back to our previous conversation about tr...   FAIL
+  [283/500] recall     I was looking back at our previous conversation abou...   PASS
+  [284/500] recall     I was going through our previous conversation about ...   FAIL
+  [285/500] recall     I remember you told me to dilute tea tree oil with a...   FAIL
+  [286/500] recall     I was looking back at our previous conversation abou...   FAIL
+  [287/500] recall     What degree did I graduate with?                          PASS
+  [288/500] recall     How long is my daily commute to work?                     PASS
+  [289/500] recall     Where did I redeem a $5 coupon on coffee creamer?         PASS
+  [290/500] recall     What play did I attend at the local community theater?    PASS
+  [291/500] recall     What is the name of the playlist I created on Spotify?    FAIL
+  [292/500] recall     What was my last name before I changed it?                PASS
+  [293/500] recall     Where do I take yoga classes?                             PASS
+  [294/500] recall     What color did I repaint my bedroom walls?                PASS
+  [295/500] recall     When did I volunteer at the local animal shelter's f...   FAIL
+  [296/500] recall     Where did I buy my new tennis racket from?                PASS
+  [297/500] recall     What was my previous occupation?                          PASS
+  [298/500] recall     How much did I spend on a designer handbag?               PASS
+  [299/500] recall     How many playlists do I have on Spotify?                  PASS
+  [300/500] recall     Where did I attend for my study abroad program?           PASS
+  [301/500] recall     What was the discount I got on my first purchase fro...   PASS
+  [302/500] recall     How long did it take me to assemble the IKEA bookshelf?   PASS
+  [303/500] recall     What did I buy for my sister's birthday gift?             PASS
+  [304/500] recall     What speed is my new internet plan?                       PASS
+  [305/500] recall     How many shirts did I pack for my 5-day trip to Cost...   FAIL
+  [306/500] recall     What was my previous stance on spirituality?              PASS
+  [307/500] recall     What brand are my favorite running shoes?                 PASS
+  [308/500] recall     What certification did I complete last month?             PASS
+  [309/500] recall     How many bikes do I own?                                  PASS
+  [310/500] recall     What breed is my dog?                                     FAIL
+  [311/500] recall     How many largemouth bass did I catch on my fishing t...   PASS
+  [312/500] recall     How many amateur comedians did I watch perform at th...   FAIL
+  [313/500] recall     What is the name of my cat?                               PASS
+  [314/500] recall     How old was I when my grandma gave me the silver nec...   PASS
+  [315/500] recall     What is my preferred gin-to-vermouth ratio for a cla...   PASS
+  [316/500] recall     How much RAM did I upgrade my laptop to?                  PASS
+  [317/500] recall     How much is the painting of a sunset worth in terms ...   FAIL
+  [318/500] recall     Where did I attend my cousin's wedding?                   FAIL
+  [319/500] recall     Where did I complete my Bachelor's degree in Compute...   PASS
+  [320/500] recall     How long did it take to move to the new apartment?        PASS
+  [321/500] recall     What type of cocktail recipe did I try last weekend?      PASS
+  [322/500] recall     What type of rice is my favorite?                         PASS
+  [323/500] recall     Who did I have a conversation with about destiny?         FAIL
+  [324/500] recall     Where did I buy my new bookshelf from?                    PASS
+  [325/500] recall     What time do I stop checking work emails and messages?    PASS
+  [326/500] recall     How many copies of my favorite artist's debut album ...   PASS
+  [327/500] recall     How long have I been collecting vintage cameras?          PASS
+  [328/500] recall     Where did I go on a week-long trip with my family?        FAIL
+  [329/500] recall     What did I bake for my niece's birthday party?            PASS
+  [330/500] recall     What is the name of the music streaming service have...   PASS
+  [331/500] recall     How long did I wait for the decision on my asylum ap...   PASS
+  [332/500] recall     What type of action figure did I buy from a thrift s...   FAIL
+  [333/500] recall     How long was I in Japan for?                              PASS
+  [334/500] recall     Where did I attend the Imagine Dragons concert?           PASS
+  [335/500] recall     How much screen time have I been averaging on Instag...   PASS
+  [336/500] recall     What type of bulb did I replace in my bedside lamp?       FAIL
+  [337/500] recall     What size is my new Samsung TV?                           PASS
+  [338/500] recall     What book am I currently reading?                         PASS
+  [339/500] recall     How many skeins of worsted weight yarn did I find in...   FAIL
+  [340/500] recall     How many hours did I spend watching documentaries on...   PASS
+  [341/500] recall     What time do I usually get home from work on weeknig...   PASS
+  [342/500] recall     What is my ethnicity?                                     PASS
+  [343/500] recall     How much time do I dedicate to practicing guitar eve...   PASS
+  [344/500] recall     Where does my sister Emily live?                          PASS
+  [345/500] recall     How long did Alex marinate the BBQ ribs in special s...   PASS
+  [346/500] recall     Who gave me a new stand mixer as a birthday gift?         PASS
+  [347/500] recall     What brand of shampoo do I currently use?                 PASS
+  [348/500] recall     What health issue did I initially think was just a c...   PASS
+  [349/500] recall     Where did I meet Sophia?                                  PASS
+  [350/500] recall     What game did I finally beat last weekend?                PASS
+  [351/500] recall     What is the name of my hamster?                           FAIL
+  [352/500] recall     How long have I been collecting vintage films?            FAIL
+  [353/500] recall     What did I bake for my uncle's birthday party?            FAIL
+  [354/500] recall     How long was I in Korea for?                              FAIL
+  [355/500] recall     How much time do I dedicate to practicing violin eve...   FAIL
+  [356/500] recall     What did my dad gave me as a birthday gift?               FAIL
+  [357/500] temporal   How many days passed between my visit to the Museum ...   FAIL
+  [358/500] temporal   Which three events happened in the order from first ...   FAIL
+  [359/500] temporal   How many weeks ago did I meet up with my aunt and re...   FAIL
+  [360/500] temporal   How many months have passed since I participated in ...   FAIL
+  [361/500] temporal   How many days passed between the day I started playi...   FAIL
+  [362/500] temporal   How many months have passed since I last visited a m...   FAIL
+  [363/500] temporal   How many weeks ago did I attend the friends and fami...   FAIL
+  [364/500] temporal   Which event happened first, my cousin's wedding or M...   FAIL
+  [365/500] temporal   How many days ago did I attend the Maundy Thursday s...   FAIL
+  [366/500] temporal   How many days ago did I attend a baking class at a l...   FAIL
+  [367/500] temporal   How many days passed between the day I started water...   FAIL
+  [368/500] temporal   How many weeks ago did I start using the cashback ap...   FAIL
+  [369/500] temporal   How many days had passed since I finished reading 'T...   FAIL
+  [370/500] temporal   How many days did I spend on my solo camping trip to...   FAIL
+  [371/500] temporal   What is the order of the three trips I took in the p...   FAIL
+  [372/500] temporal   How many months ago did I attend the Seattle Interna...   FAIL
+  [373/500] temporal   How many days ago did I buy a smoker?                     FAIL
+  [374/500] temporal   What is the order of the three events: 'I signed up ...   FAIL
+  [375/500] temporal   How many weeks in total do I spent on reading 'The N...   FAIL
+  [376/500] temporal   How many days passed between the day I cancelled my ...   FAIL
+  [377/500] temporal   How many weeks passed between the day I bought my ne...   FAIL
+  [378/500] temporal   How many days ago did I meet Emma?                        FAIL
+  [379/500] temporal   What is the order of the six museums I visited from ...   FAIL
+  [380/500] temporal   How many days passed between the day I attended the ...   FAIL
