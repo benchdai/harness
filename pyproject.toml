@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "benchd-harness"
+version = "0.1.0"
+description = "Neutral benchmark harness for AI memory systems"
+readme = "README.md"
+requires-python = ">=3.9"
+license = {text = "MIT"}
+
+dependencies = [
+    "click>=8.0",
+    "pynacl>=1.5.0",
+]
+
+[project.optional-dependencies]
+mem0 = ["mem0ai>=0.1.0"]
+dev = [
+    "pytest>=7.0",
+    "pytest-cov>=4.0",
+]
+
+[project.scripts]
+benchd = "benchd_harness.cli:cli"
+
+[tool.setuptools.packages.find]
+include = ["benchd_harness*"]
