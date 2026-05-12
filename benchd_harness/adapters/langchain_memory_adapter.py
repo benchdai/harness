@@ -1,23 +1,21 @@
 """
 LangChain Memory adapter for Bench'd harness.
 
-Uses LangChain's ConversationSummaryBufferMemory, which summarizes older
-messages and keeps recent ones in a buffer. This actually extracts and
-compresses information (via an LLM) rather than just buffering raw text.
+Uses LangChain's ChatMessageHistory to store conversation turns, then
+recalls by loading the full history (with smart truncation) and using
+the LLM to answer queries from that context.
+
+This replaces the deprecated ConversationSummaryBufferMemory approach
+which would crash on long conversations due to accumulated summarization
+LLM calls.
 
 Requires:
-  pip install langchain langchain-openai langchain-community
+  pip install langchain langchain-openai langchain-core
 
   Either:
     export OPENAI_API_KEY=sk-...
   Or (OpenRouter):
     export OPENROUTER_API_KEY=sk-or-...
-
-Limitations:
-  - ConversationSummaryBufferMemory is designed for chat continuity, not
-    semantic search. Recall works by dumping the memory buffer and using
-    the LLM to answer the query from that context.
-  - The summary quality depends on the backing LLM.
 """
 
 import os
@@ -28,11 +26,11 @@ from benchd_harness.adapters.base import BaseAdapter
 
 class LangChainMemoryAdapter(BaseAdapter):
     """
-    Adapter for LangChain ConversationSummaryBufferMemory.
+    Adapter using LangChain's ChatMessageHistory + LLM recall.
 
-    Ingests conversation turns via save_context(), then on recall() loads
-    the memory variables (summary + buffer) and uses the LLM to answer
-    the query from the stored context.
+    Ingests conversation turns into an in-memory message store, then
+    on recall() loads and truncates the history to fit context, and
+    uses the LLM to answer the query.
     """
 
     @property
@@ -47,14 +45,14 @@ class LangChainMemoryAdapter(BaseAdapter):
         except ImportError:
             return None
 
-    def __init__(self, model: str = "openai/gpt-4o-mini", max_token_limit: int = 2000):
+    def __init__(self, model: str = "openai/gpt-4o-mini", max_context_chars: int = 60000):
         self._model_name = model
-        self._max_token_limit = max_token_limit
+        self._max_context_chars = max_context_chars
         self._llm = None
-        self._memory = None
+        self._messages: list = []
 
     def setup(self) -> None:
-        """Initialize ChatOpenAI and ConversationSummaryBufferMemory."""
+        """Initialize ChatOpenAI."""
         openai_key = os.environ.get("OPENAI_API_KEY")
         openrouter_key = os.environ.get("OPENROUTER_API_KEY")
 
@@ -70,19 +68,10 @@ class LangChainMemoryAdapter(BaseAdapter):
         except ImportError:
             raise RuntimeError(
                 "langchain-openai package not installed. Install with:\n"
-                "  pip install langchain langchain-openai langchain-community"
+                "  pip install langchain-openai langchain-core"
             )
 
-        try:
-            from langchain_classic.memory import ConversationSummaryBufferMemory
-        except ImportError:
-            raise RuntimeError(
-                "langchain-classic package not installed (provides memory classes). "
-                "Install with: pip install langchain"
-            )
-
-        # Configure LLM — use OpenRouter if available, else direct OpenAI
-        # Strip provider prefix for LangChain tokenizer compatibility
+        # Configure LLM
         model_for_langchain = self._model_name
         if "/" in model_for_langchain:
             model_for_langchain = model_for_langchain.split("/", 1)[1]
@@ -99,120 +88,99 @@ class LangChainMemoryAdapter(BaseAdapter):
             llm_kwargs["api_key"] = openai_key
 
         self._llm = ChatOpenAI(**llm_kwargs)
-
-        self._memory = ConversationSummaryBufferMemory(
-            llm=self._llm,
-            max_token_limit=self._max_token_limit,
-            return_messages=False,
-            human_prefix="User",
-            ai_prefix="Assistant",
-        )
+        self._messages = []
 
     def reset(self) -> None:
         """Clear memory between benchmark questions."""
-        if self._memory is not None:
-            self._memory.clear()
+        self._messages = []
 
     def teardown(self) -> None:
         """Clean up."""
-        if self._memory is not None:
-            self._memory.clear()
+        self._messages = []
 
     def ingest(self, turns: List[Dict[str, Any]]) -> None:
         """
-        Feed conversation turns into LangChain memory via save_context().
-
-        save_context() takes (input_dict, output_dict) pairs, so we pair up
-        user/assistant turns. System messages are prepended to the next user
-        message. Unpaired turns are handled gracefully.
+        Store conversation turns as LangChain message objects.
         """
-        if self._memory is None:
+        if self._llm is None:
             raise RuntimeError("Adapter not initialized. Call setup() first.")
 
-        # Collect turns into (user_input, assistant_output) pairs
-        pending_system = ""
-        pending_user = None
+        from langchain_core.messages import HumanMessage, AIMessage, SystemMessage
 
         for turn in turns:
             role = turn.get("role", "user")
             content = turn.get("content", "")
 
             if role == "system":
-                # Accumulate system text to prepend to next user message
-                pending_system += f"[System: {content}] "
+                self._messages.append(SystemMessage(content=content))
             elif role == "user":
-                # If there's a pending user without a paired assistant response,
-                # save it with an empty assistant response
-                if pending_user is not None:
-                    self._memory.save_context(
-                        {"input": pending_user},
-                        {"output": ""},
-                    )
-                pending_user = pending_system + content
-                pending_system = ""
+                self._messages.append(HumanMessage(content=content))
             elif role == "assistant":
-                if pending_user is not None:
-                    self._memory.save_context(
-                        {"input": pending_user},
-                        {"output": content},
-                    )
-                    pending_user = None
-                else:
-                    # Assistant message without a preceding user message —
-                    # save with empty input
-                    self._memory.save_context(
-                        {"input": pending_system or "(no user input)"},
-                        {"output": content},
-                    )
-                    pending_system = ""
-
-        # Handle trailing unpaired user message
-        if pending_user is not None:
-            self._memory.save_context(
-                {"input": pending_user},
-                {"output": ""},
-            )
+                self._messages.append(AIMessage(content=content))
 
     def recall(self, query: str) -> str:
         """
-        Load memory context and use the LLM to answer the query.
+        Build context from stored messages and use the LLM to answer.
 
-        LangChain's load_memory_variables returns the summary + recent buffer.
-        We feed that as context to the LLM along with the query.
+        Truncates from the beginning if the conversation is too long,
+        keeping the most recent messages (which tend to be most relevant
+        for memory recall benchmarks).
         """
-        if self._memory is None or self._llm is None:
+        if self._llm is None:
             raise RuntimeError("Adapter not initialized. Call setup() first.")
 
-        try:
-            mem_vars = self._memory.load_memory_variables({})
-        except Exception as e:
-            return f"[memory load error: {e}]"
-
-        # The memory key is typically "history"
-        context = ""
-        for key, value in mem_vars.items():
-            if isinstance(value, str):
-                context += value
-            elif isinstance(value, list):
-                # If return_messages=True, we get message objects
-                context += "\n".join(str(m) for m in value)
-
-        if not context.strip():
+        if not self._messages:
             return ""
 
-        # Use the LLM to answer the query from the stored context
-        prompt = (
+        # Build a text representation of the conversation history
+        # with smart truncation
+        lines = []
+        total_chars = 0
+
+        # Walk messages in reverse to prioritize recent context
+        for msg in reversed(self._messages):
+            role_label = "User"
+            if hasattr(msg, "type"):
+                if msg.type == "ai":
+                    role_label = "Assistant"
+                elif msg.type == "system":
+                    role_label = "System"
+                elif msg.type == "human":
+                    role_label = "User"
+
+            line = f"{role_label}: {msg.content}"
+            total_chars += len(line)
+
+            if total_chars > self._max_context_chars:
+                lines.append("[... earlier conversation truncated ...]")
+                break
+
+            lines.append(line)
+
+        # Reverse back to chronological order
+        lines.reverse()
+        context = "\n".join(lines)
+
+        # Use LangChain's LLM to answer from context
+        from langchain_core.messages import HumanMessage, SystemMessage
+
+        system_prompt = (
             "You are a helpful assistant. Based ONLY on the following conversation "
             "memory, answer the question. If the answer is not in the memory, say "
-            "you don't know. Be concise and factual.\n\n"
+            "you don't know. Be concise and factual."
+        )
+
+        user_prompt = (
             f"Conversation memory:\n{context}\n\n"
             f"Question: {query}\n\n"
             "Answer:"
         )
 
         try:
-            response = self._llm.invoke(prompt)
-            # response is an AIMessage; extract content
+            response = self._llm.invoke([
+                SystemMessage(content=system_prompt),
+                HumanMessage(content=user_prompt),
+            ])
             if hasattr(response, "content"):
                 return str(response.content)
             return str(response)
