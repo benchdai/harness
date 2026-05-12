@@ -100,6 +100,38 @@ try:
 except ImportError:
     pass
 
+try:
+    from .crewai_adapter import CrewAIMemoryAdapter
+
+    _BUILTIN_ADAPTERS["crewai-memory"] = CrewAIMemoryAdapter
+    __all__ = [*__all__, "CrewAIMemoryAdapter"]
+except ImportError:
+    pass
+
+try:
+    from .langmem_adapter import LangMemAdapter
+
+    _BUILTIN_ADAPTERS["langmem"] = LangMemAdapter
+    __all__ = [*__all__, "LangMemAdapter"]
+except ImportError:
+    pass
+
+try:
+    from .khoj_adapter import KhojAdapter
+
+    _BUILTIN_ADAPTERS["khoj"] = KhojAdapter
+    __all__ = [*__all__, "KhojAdapter"]
+except ImportError:
+    pass
+
+try:
+    from .graphrag_adapter import GraphRAGAdapter
+
+    _BUILTIN_ADAPTERS["microsoft-graphrag"] = GraphRAGAdapter
+    __all__ = [*__all__, "GraphRAGAdapter"]
+except ImportError:
+    pass
+
 from .mcp_adapter import MCPAdapter
 
 _BUILTIN_ADAPTERS["mcp"] = MCPAdapter
