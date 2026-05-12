@@ -86,7 +86,7 @@ class LettaAdapter(BaseAdapter):
 
         # Verify the server is reachable by hitting the health endpoint.
         try:
-            self._client.health.check()
+            self._client.health()
         except Exception as e:
             raise RuntimeError(
                 f"Cannot reach Letta server at {self._base_url}.\n"
