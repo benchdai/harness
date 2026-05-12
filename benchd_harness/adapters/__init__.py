@@ -132,6 +132,30 @@ try:
 except ImportError:
     pass
 
+try:
+    from .autogpt_adapter import AutoGPTMemoryAdapter
+
+    _BUILTIN_ADAPTERS["autogpt-memory"] = AutoGPTMemoryAdapter
+    __all__ = [*__all__, "AutoGPTMemoryAdapter"]
+except ImportError:
+    pass
+
+try:
+    from .julep_adapter import JulepAdapter
+
+    _BUILTIN_ADAPTERS["julep"] = JulepAdapter
+    __all__ = [*__all__, "JulepAdapter"]
+except ImportError:
+    pass
+
+try:
+    from .openmemory_adapter import OpenMemoryAdapter
+
+    _BUILTIN_ADAPTERS["openmemory"] = OpenMemoryAdapter
+    __all__ = [*__all__, "OpenMemoryAdapter"]
+except ImportError:
+    pass
+
 from .mcp_adapter import MCPAdapter
 
 _BUILTIN_ADAPTERS["mcp"] = MCPAdapter
