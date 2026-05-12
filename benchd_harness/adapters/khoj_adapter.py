@@ -1,11 +1,14 @@
 """
 Khoj adapter for Bench'd harness.
 
-Connects to a Khoj instance (self-hosted or cloud) to ingest conversations
-and query memory via the Khoj API.
+Connects to a running Khoj server to ingest conversations via file upload
+and query memory via semantic search.
 
 Requires:
   A running Khoj server (self-hosted or cloud)
+
+  Start with: khoj --anonymous-mode
+  Or: docker run -p 42110:42110 khoj
 
   export KHOJ_URL=http://localhost:42110  (default)
   export KHOJ_API_KEY=...  (optional, for cloud)
@@ -41,7 +44,6 @@ class KhojAdapter(BaseAdapter):
         self._session = requests.Session()
         if api_key:
             self._session.headers["Authorization"] = f"Bearer {api_key}"
-        self._session.headers["Content-Type"] = "application/json"
 
         # Verify connection
         try:
@@ -55,10 +57,19 @@ class KhojAdapter(BaseAdapter):
             )
 
     def reset(self) -> None:
-        # Khoj doesn't have a simple reset — we'll use a fresh conversation
-        pass
+        """Clear plaintext content index."""
+        if self._session and self._base_url:
+            try:
+                self._session.delete(
+                    f"{self._base_url}/api/content",
+                    params={"t": "plaintext"},
+                    timeout=10,
+                )
+            except Exception:
+                pass
 
     def teardown(self) -> None:
+        self.reset()
         if self._session:
             self._session.close()
 
@@ -66,44 +77,35 @@ class KhojAdapter(BaseAdapter):
         if self._session is None or self._base_url is None:
             raise RuntimeError("Adapter not initialized. Call setup() first.")
 
-        # Ingest conversation turns as chat messages
+        # Build conversation as plaintext
+        lines = []
         for turn in turns:
             role = turn.get("role", "user")
             content = turn.get("content", "")
+            timestamp = turn.get("timestamp", "")
+            prefix = f"[{timestamp}] " if timestamp else ""
+            lines.append(f"{prefix}{role}: {content}")
 
-            try:
-                # Use Khoj's chat API to build conversation history
-                self._session.post(
-                    f"{self._base_url}/api/chat",
-                    json={
-                        "q": content if role == "user" else f"[{role}]: {content}",
-                        "stream": False,
-                    },
-                    timeout=30,
-                )
-            except Exception:
-                # Also try indexing as a document
-                try:
-                    self._session.post(
-                        f"{self._base_url}/api/v1/index/update",
-                        json={
-                            "t": content,
-                            "metadata": {"role": role},
-                        },
-                        timeout=30,
-                    )
-                except Exception:
-                    pass
+        text_content = "\n".join(lines)
+
+        # Upload as plaintext file via PUT /api/content
+        try:
+            self._session.put(
+                f"{self._base_url}/api/content",
+                files=[("files", ("conversation.txt", text_content, "text/plain"))],
+                timeout=30,
+            )
+        except Exception as e:
+            raise RuntimeError(f"Khoj ingest failed: {e}")
 
     def recall(self, query: str) -> str:
         if self._session is None or self._base_url is None:
             raise RuntimeError("Adapter not initialized. Call setup() first.")
 
         try:
-            # Use Khoj's search API
             resp = self._session.get(
                 f"{self._base_url}/api/search",
-                params={"q": query, "t": "all", "n": 5},
+                params={"q": query, "t": "plaintext", "n": 5},
                 timeout=30,
             )
             resp.raise_for_status()
