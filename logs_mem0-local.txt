@@ -391,3 +391,149 @@ Failed to load spaCy full model: spaCy is not installed. Install it with: pip in
   [378/500] temporal   How many days ago did I meet Emma?                        FAIL
   [379/500] temporal   What is the order of the six museums I visited from ...   FAIL
   [380/500] temporal   How many days passed between the day I attended the ...   FAIL
+  [381/500] temporal   How many days passed between the day I received feed...   FAIL
+  [382/500] temporal   How many days had passed since I started taking ukul...   FAIL
+  [383/500] temporal   How many weeks passed between the time I sold homema...   FAIL
+  [384/500] temporal   What is the order of the sports events I watched in ...   FAIL
+  [385/500] temporal   How many days did it take me to finish 'The Nighting...   FAIL
+  [386/500] temporal   What is the order of the three sports events I parti...   FAIL
+  [387/500] temporal   How many weeks had passed since I recovered from the...   FAIL
+  [388/500] temporal   What is the order of the concerts and musical events...   FAIL
+  [389/500] temporal   How many days passed between the day I finished read...   FAIL
+  [390/500] temporal   Which mode of transport did I use most recently, a b...   PASS
+  [391/500] temporal   How many weeks have I been taking sculpting classes ...   FAIL
+  [392/500] temporal   How many days ago did I attend a networking event?        FAIL
+  [393/500] temporal   What is the order of airlines I flew with from earli...   FAIL
+  [394/500] temporal   How many days passed between the day I repotted the ...   FAIL
+  [395/500] temporal   How many days passed between the day I replaced my s...   FAIL
+  [396/500] temporal   How many weeks ago did I attend a bird watching work...   FAIL
+  [397/500] temporal   How many months passed between the completion of my ...   FAIL
+  [398/500] temporal   How many months ago did I attend the photography wor...   FAIL
+  [399/500] temporal   Which event did I participate in first, the charity ...   FAIL
+  [400/500] temporal   How many days ago did I watch the Super Bowl?             FAIL
+  [401/500] temporal   How many days ago did I launch my website when I sig...   FAIL
+  [402/500] temporal   How many days ago did I go on a whitewater rafting t...   FAIL
+  [403/500] temporal   How many days ago did I harvest my first batch of fr...   FAIL
+  [404/500] temporal   How many weeks ago did I attend the 'Summer Nights' ...   FAIL
+  [405/500] temporal   How many days ago did I participate in the 5K charit...   FAIL
+  [406/500] temporal   Which event happened first, my participation in the ...   FAIL
+  [407/500] temporal   How many days passed between the day I fixed my moun...   FAIL
+  [408/500] temporal   Who graduated first, second and third among Emma, Ra...   FAIL
+  [409/500] temporal   How many days ago did I read the March 15th issue of...   FAIL
+  [410/500] temporal   Which book did I finish a week ago?                       FAIL
+  [411/500] temporal   I mentioned participating in a sports event two week...   FAIL
+  [412/500] temporal   I received a piece of jewelry last Saturday from whom?    FAIL
+  [413/500] temporal   What charity event did I participate in a month ago?      FAIL
+  [414/500] temporal   Who did I go with to the music event last Saturday?       FAIL
+  [415/500] temporal   What gardening-related activity did I do two weeks ago?   FAIL
+  [416/500] temporal   What was the airline that I flied with on Valentine'...   FAIL
+  [417/500] temporal   I mentioned that I participated in an art-related ev...   FAIL
+  [418/500] temporal   Which bike did I fixed or serviced the past weekend?      FAIL
+  [419/500] temporal   What was the the life event of one of my relatives t...   PASS
+  [420/500] temporal   Who did I meet with during the lunch last Tuesday?        PASS
+  [421/500] temporal   What is the artist that I started to listen to last ...   FAIL
+  [422/500] temporal   I mentioned cooking something for my friend a couple...   PASS
+  [423/500] temporal   What was the significant buisiness milestone I menti...   FAIL
+  [424/500] temporal   What did I do with Rachel on the Wednesday two month...   FAIL
+  [425/500] temporal   I mentioned visiting a museum two months ago. Did I ...   FAIL
+  [426/500] temporal   I mentioned an investment for a competition four wee...   FAIL
+  [427/500] temporal   What kitchen appliance did I buy 10 days ago?             FAIL
+  [428/500] temporal   Where did I attend the religious activity last week?      PASS
+  [429/500] temporal   What was the social media activity I participated 5 ...   FAIL
+  [430/500] reasoning  What is the total distance of the hikes I did on two...   FAIL
+  [431/500] reasoning  How many pages do I have left to read in 'The Nighti...   PASS
+  [432/500] reasoning  For my daily commute, how much more expensive was th...   PASS
+  [433/500] reasoning  What was the approximate increase in Instagram follo...   FAIL
+  [434/500] reasoning  How many antique items did I inherit or acquire from...   FAIL
+  [435/500] reasoning  What is the total cost of the new food bowl, measuri...   FAIL
+  [436/500] reasoning  How much cashback did I earn at SaveMart last Thursday?   FAIL
+  [437/500] reasoning  What is the difference in price between my luxury bo...   FAIL
+  [438/500] reasoning  What percentage of packed shoes did I wear on my las...   FAIL
+  [439/500] reasoning  When did I submit my research paper on sentiment ana...   FAIL
+  [440/500] reasoning  What percentage discount did I get on the book from ...   FAIL
+  [441/500] reasoning  Did I receive a higher percentage discount on my fir...   FAIL
+  [442/500] reasoning  What is the total number of episodes I've listened t...   FAIL
+  [443/500] reasoning  How many plants did I initially plant for tomatoes a...   FAIL
+  [444/500] reasoning  How many hours do I work in a typical week during pe...   FAIL
+  [445/500] reasoning  How much older am I than the average age of employee...   FAIL
+  [446/500] reasoning  What was the total number of people reached by my Fa...   PASS
+  [447/500] reasoning  How many Marvel movies did I re-watch?                    FAIL
+  [448/500] reasoning  How much did I save on the designer handbag at TK Maxx?   PASS
+  [449/500] reasoning  What is the total number of goals and assists I have...   PASS
+  [450/500] reasoning  How much did I spend on car wash and parking ticket?      FAIL
+  [451/500] reasoning  How many sports have I played competitively in the p...   PASS
+  [452/500] reasoning  What are the two hobbies that led me to join online ...   FAIL
+  [453/500] reasoning  How old was I when Alex was born?                         FAIL
+  [454/500] reasoning  How many points do I need to earn to redeem a free s...   FAIL
+  [455/500] reasoning  What is the total number of days I spent in Japan an...   FAIL
+  [456/500] reasoning  What is the minimum amount I could get if I sold the...   FAIL
+  [457/500] reasoning  What percentage of the countryside property's price ...   FAIL
+  [458/500] reasoning  What is the total cost of Lola's vet visit and flea ...   FAIL
+  [459/500] reasoning  How much more did I have to pay for the trip after t...   PASS
+  [460/500] reasoning  What is the total number of lunch meals I got from t...   PASS
+  [461/500] reasoning  How much did I spend on each coffee mug for my cowor...   FAIL
+  [462/500] reasoning  At which university did I present a poster on my the...   PASS
+  [463/500] reasoning  How long have I been working in my current role?          FAIL
+  [464/500] reasoning  How much more was the pre-approval amount than the f...   PASS
+  [465/500] reasoning  What is the total cost of the car cover and detailin...   PASS
+  [466/500] reasoning  What is the total distance I covered in my four road...   FAIL
+  [467/500] reasoning  What is the total time it takes I to get ready and c...   FAIL
+  [468/500] reasoning  How much more miles per gallon was my car getting a ...   FAIL
+  [469/500] reasoning  What is the total number of online courses I've comp...   FAIL
+  [470/500] reasoning  How much did I save on the Jimmy Choo heels?              FAIL
+  [471/500] reasoning  How many years will I be when my friend Rachel gets ...   FAIL
+  [472/500] reasoning  How much faster did I finish the 5K run compared to ...   FAIL
+  [473/500] reasoning  How many dinner parties have I attended in the past ...   FAIL
+  [474/500] reasoning  How much did I spend on gifts for my sister?              FAIL
+  [475/500] reasoning  What time did I reach the clinic on Monday?               FAIL
+  [476/500] reasoning  What is the total weight of the new feed I purchased...   FAIL
+  [477/500] reasoning  What percentage of leadership positions do women hol...   PASS
+  [478/500] reasoning  How much will I save by taking the train from the ai...   FAIL
+  [479/500] reasoning  What is the total number of views on my most popular...   PASS
+  [480/500] reasoning  How many years older is my grandma than me?               FAIL
+  [481/500] reasoning  How many years older am I than when I graduated from...   FAIL
+  [482/500] reasoning  What is the total amount I spent on gifts for my cow...   PASS
+  [483/500] reasoning  What is the total number of comments on my recent Fa...   FAIL
+  [484/500] reasoning  How many days a week do I attend fitness classes?         FAIL
+  [485/500] reasoning  What is the total amount I spent on the designer han...   PASS
+  [486/500] reasoning  How much more money did I raise than my initial goal...   FAIL
+  [487/500] reasoning  What is the average GPA of my undergraduate and grad...   FAIL
+  [488/500] reasoning  How many minutes did I exceed my target time by in t...   FAIL
+  [489/500] reasoning  What was the page count of the two novels I finished...   FAIL
+  [490/500] reasoning  What is the total number of siblings I have?              FAIL
+  [491/500] reasoning  How much have I made from selling eggs this month?        FAIL
+  [492/500] reasoning  How much discount will I get on my next purchase at ...   FAIL
+  [493/500] reasoning  How much earlier do I wake up on Fridays compared to...   PASS
+  [494/500] reasoning  How many fun runs did I miss in March due to work co...   FAIL
+  [495/500] reasoning  How many pages do I have left to read in 'Sapiens'?       FAIL
+  [496/500] reasoning  How many plants did I initially plant for tomatoes a...   FAIL
+  [497/500] reasoning  What is the total cost of my recently purchased head...   FAIL
+  [498/500] reasoning  At which university did I present a poster for my un...   FAIL
+  [499/500] reasoning  How old will Rachel be when I get married?                FAIL
+  [500/500] reasoning  How much will I save by taking the bus from the airp...   FAIL
+
+============================================================
+  Completed in 4197.1s
+  Passed: 162  Failed: 338  Pending: 0
+  --- Efficiency ---
+  Mean latency:       6427.3 ms
+  Total recall tokens: 88098
+  Mean ingest tokens:  5654
+  Tokens/correct ans:  543.8
+============================================================
+
+  Results saved to: runs-full/run_5f8cac732bcf/manifest.signed.json
+
+
+==================================================
+Run complete: run_5f8cac732bcf
+System: mem0-local | Benchmark: longmemeval-v1
+
+Verified Score:  32.4 / 100
+Nuance Score:    N/A
+
+Questions: 500 total, 500 scored, 0 pending
+Passed: 162 | Failed: 338
+
+Manifest saved: runs-full/run_5f8cac732bcf/manifest.signed.json
+==================================================

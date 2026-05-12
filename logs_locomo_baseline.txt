@@ -1,0 +1,85 @@
+
+============================================================
+  Bench'd Harness v0.1.0
+  Run:       run_97dc7ee145d9
+  Benchmark: LoCoMo (1.0)
+  Adapter:   llm-baseline
+  Questions: 49
+  Scoring:   full pipeline (answerer + judge)
+============================================================
+
+  [ 1/49] temporal   When did Jon visit networking events for his store?       FAIL
+  [ 2/49] temporal   When did Caroline go to the LGBTQ conference?             PASS
+  [ 3/49] temporal   Which week did Tim visit the UK for the Harry Potter...   FAIL
+  [ 4/49] temporal   When did Nate win a big Valorant tourney?                 PASS
+  [ 5/49] temporal   When did Nate win an international tournament?            FAIL
+  [ 6/49] temporal   When did John go to a convention with colleagues?         FAIL
+  [ 7/49] temporal   When did Gina develop a video presentation to teach ...   FAIL
+  [ 8/49] temporal   When did Evan lose his job?                               PASS
+  [ 9/49] temporal   When did Jon start to go to the gym?                      FAIL
+  [10/49] temporal   When did Dave return from San Francisco?                  FAIL
+  [11/49] reasoning  Does James live in Connecticut?                           FAIL
+  [12/49] reasoning  Would Melanie be considered a member of the LGBTQ co...   FAIL
+  [13/49] reasoning  Would Caroline pursue writing as a career option?         FAIL
+  [14/49] recall     Who gave Maria's family money when she was younger a...   PASS
+  [15/49] recall     what are John's goals with regards to his basketball...   FAIL
+  [16/49] recall     What kind of writing does Tim do?                         FAIL
+  [17/49] recall     Who inspired Dave's passion for car engineering?          PASS
+  [18/49] recall     What activities has Melanie done with her family?         FAIL
+  [19/49] recall     What do both Joanna and Nate appreciate the beauty of?    PASS
+  [20/49] recall     What style of guitars does Calvin own?                    FAIL
+  [21/49] recall     What kinds of things did Evan have broken?                FAIL
+  [22/49] recall     What are John's goals for his career that are not re...   PASS
+  [23/49] reasoning  Why does Audrey make jewelry out of recycled objects?     PASS
+  [24/49] reasoning  Why did Deborah spend time in the garden?                 PASS
+  [25/49] reasoning  How does Nate feel about Joanna's ability to bounce ...   PASS
+  [26/49] reasoning  What type of videos does Calvin usually watch on his...   PASS
+  [27/49] reasoning  What is Caroline excited about in the adoption process?   PASS
+  [28/49] reasoning  What workshop did Dave get picked for on 11 August, ...   FAIL
+  [29/49] reasoning  What did Calvin do recently at his Japanese house?        PASS
+  [30/49] reasoning  What kind of event did John and his family attend in...   FAIL
+  [31/49] reasoning  What painting did Evan share with Sam in October?         FAIL
+  [32/49] reasoning  What outdoor activities does Andrew plan on trying a...   PASS
+  [33/49] reasoning  What does John want to do after his basketball career?    PASS
+  [34/49] reasoning  What yoga activity has Maria been trying to improve ...   FAIL
+  [35/49] reasoning  How does Nate describe the process of taking care of...   PASS
+  [36/49] reasoning  How did the audience in Tokyo react when Calvin sang...   PASS
+  [37/49] reasoning  What spice did John add to the soup for flavor?           PASS
+  [38/49] reasoning  How does Gina describe the studio that Jon has opened?    PASS
+  [39/49] reasoning  What did Gina receive from a dance contest?               PASS
+  [40/49] reasoning  What book did Tim just finish reading on 8th Decembe...   PASS
+  [41/49] reasoning  What is Jon offering to the dancers at his dance stu...   PASS
+  [42/49] reasoning  What hobby is a therapy for John when away from the ...   PASS
+  [43/49] reasoning  What was the setting for John and his wife's first d...   PASS
+  [44/49] reasoning  What album does Deborah recommend for meditation and...   PASS
+  [45/49] reasoning  What kind of cake did Joanna share a photo of that s...   PASS
+  [46/49] reasoning  What did Dave recently start a blog about?                PASS
+  [47/49] reasoning  What activity did Caroline used to do with her dad?       PASS
+  [48/49] reasoning  What advice did Evan suggest Sam seek from a doctor?      PASS
+  [49/49] reasoning  Which type of sushi did Audrey suggest trying first ...   PASS
+
+============================================================
+  Completed in 228.7s
+  Passed: 30  Failed: 19  Pending: 0
+  --- Efficiency ---
+  Mean latency:       2213.4 ms
+  Total recall tokens: 1031
+  Mean ingest tokens:  30612
+  Tokens/correct ans:  34.4
+============================================================
+
+  Results saved to: runs-locomo/run_97dc7ee145d9/manifest.signed.json
+
+
+==================================================
+Run complete: run_97dc7ee145d9
+System: llm-baseline | Benchmark: locomo-v1
+
+Verified Score:  61.2 / 100
+Nuance Score:    N/A
+
+Questions: 49 total, 49 scored, 0 pending
+Passed: 30 | Failed: 19
+
+Manifest saved: runs-locomo/run_97dc7ee145d9/manifest.signed.json
+==================================================
