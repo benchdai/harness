@@ -1,173 +1,116 @@
 # Bench'd Harness
 
-Neutral benchmark runner for AI memory systems. Runs standardized benchmarks against any memory system adapter, scores deterministically, produces signed manifests with full failure traces.
+The neutral benchmark harness for AI memory systems. Every score is independently run, cryptographically signed, and verifiable by anyone.
 
-## Install
-
-```bash
-pip install -e ".[dev]"
-```
+**[Leaderboard](https://benchd.ai/leaderboard)** | **[Docs](https://benchd.ai/docs)** | **[Methodology](https://benchd.ai/methodology)** | **[Submit Results](https://benchd.ai/submit)**
 
 ## Quick Start
 
 ```bash
+pip install benchd-harness
+
 # Generate signing keys
 benchd keys generate --out ./keys
 
-# Run smoke benchmark against the echo adapter
-benchd run --adapter echo --benchmark smoke-memory-v0 --out ./runs --key ./keys/private.key
+# Set your LLM API key (for the judge)
+export OPENROUTER_API_KEY=sk-or-...
 
-# Verify the signed receipt
-benchd verify ./runs/<run_id>/manifest.signed.json
+# Run LongMemEval against your MCP-compatible memory system
+benchd run -a mcp -b longmemeval-v1 --judge --key ./keys/private.key \
+  --adapter-config '{"endpoint": "http://localhost:3000/mcp"}'
+
+# Submit results to the leaderboard
+benchd submit ./runs/run_xxx/manifest.signed.json
 ```
+
+## MCP Systems: Zero-Code Testing
+
+If your memory system exposes an MCP server with `ingest` and `query` tools, you don't need to write any adapter code:
+
+```bash
+benchd run -a mcp -b longmemeval-v1 --judge \
+  --adapter-config '{"endpoint": "http://localhost:3000/mcp"}'
+```
+
+The MCP adapter auto-discovers your tools and maps them to Bench'd's interface.
+
+## Available Benchmarks
+
+| Benchmark | Slug | Questions | What it tests |
+|-----------|------|-----------|---------------|
+| LongMemEval | `longmemeval-v1` | 500 | Recall, temporal reasoning, knowledge updates |
+| LoCoMo | `locomo-v1` | 1,540 | Multi-session conversational memory |
+| Smoke | `smoke-memory-v0` | 10 | Quick sanity check |
+
+## Built-in Adapters
+
+| Adapter | System | Install |
+|---------|--------|---------|
+| `mcp` | Any MCP server | Built-in |
+| `mem0-local` | Mem0 OSS | `pip install benchd-harness[mem0]` |
+| `langchain-memory` | LangChain | `pip install benchd-harness[langchain]` |
+| `llamaindex-memory` | LlamaIndex | `pip install benchd-harness[llamaindex]` |
+| `llm-baseline` | Raw LLM (no memory) | `pip install openai` |
+| `echo` | Test adapter | Built-in |
+
+## Writing a Custom Adapter
+
+```python
+from benchd_harness.adapters.base import BaseAdapter
+
+class MyAdapter(BaseAdapter):
+    @property
+    def name(self) -> str:
+        return "my-system"
+
+    def setup(self) -> None:
+        self.client = MyMemoryClient()
+
+    def ingest(self, turns: list[dict]) -> None:
+        for turn in turns:
+            self.client.add(role=turn["role"], content=turn["content"])
+
+    def recall(self, query: str) -> str:
+        return self.client.search(query).text
+
+    def reset(self) -> None:
+        self.client.clear()
+```
+
+Register in `benchd_harness/adapters/__init__.py` and run with `benchd run -a my-system`.
 
 ## Commands
 
 | Command | Description |
 |---------|-------------|
-| `benchd run` | Run a benchmark against a memory system adapter |
-| `benchd verify` | Verify a signed manifest's cryptographic signature |
-| `benchd keys generate` | Generate an Ed25519 signing keypair |
+| `benchd run` | Run a benchmark against a memory system |
+| `benchd submit` | Submit signed results to benchd.ai |
+| `benchd verify` | Verify a signed manifest |
+| `benchd keys generate` | Generate Ed25519 signing keys |
 | `benchd list` | List available adapters and benchmarks |
 
-## Architecture
+## Signing & Verification
 
-```
-benchd_harness/
-  adapters/       ← Memory system interfaces (ingest/recall)
-  benchmarks/     ← Benchmark datasets and loaders
-  scoring/        ← Deterministic scoring (exact, regex, LLM-pending)
-  signing/        ← Ed25519 signing (local dev + VerifiedState production)
-  runner.py       ← Orchestrator: ingest → recall → score → manifest → sign
-  manifest.py     ← Manifest schema and builder
-  cli.py          ← CLI entry point
-```
-
-Every piece is independent. Swap an adapter without touching the scorer. Add a benchmark without touching the runner. Change signing backend without touching anything else.
-
-## Adapter Interface
-
-Every memory system adapter implements two methods:
-
-```python
-class BaseAdapter(ABC):
-    def ingest(self, turns: list[dict]) -> None:
-        """Feed conversation turns into the memory system."""
-        ...
-
-    def recall(self, query: str) -> str:
-        """Query the memory system, return a plain string."""
-        ...
-```
-
-Turn format:
-```json
-{"role": "user", "content": "...", "timestamp": "2026-05-01T10:00:00Z"}
-```
-
-### Built-in Adapters
-
-| Adapter | Purpose |
-|---------|---------|
-| `echo` | Stores turns in memory, keyword-matches on recall. For testing the harness. |
-| `null` | Returns empty string. Proves failure traces work. |
-
-### Adding an Adapter
-
-Create a file in `benchd_harness/adapters/`, implement `BaseAdapter`, register in `__init__.py`. That's it.
-
-## Benchmarks
-
-### Built-in
-
-| Benchmark | Slug | Questions | Purpose |
-|-----------|------|-----------|---------|
-| Smoke Memory v0 | `smoke-memory-v0` | 10 | Harness integration test fixture |
-
-### Planned Real Benchmarks
-
-| Benchmark | What it tests |
-|-----------|---------------|
-| LongMemEval | Long-term memory across sessions (Microsoft Research) |
-| LoCoMo | Memory over long conversations |
-| PersonaMem | Persona consistency and preference tracking |
-| MemoChat | Memory-augmented dialogue quality |
-
-### Adding a Benchmark
-
-Create a file in `benchd_harness/benchmarks/`, implement `BaseBenchmark.load_items()` returning `BenchmarkItem` objects, register in `__init__.py`.
-
-## Scoring
-
-Two modes, used by dimension:
-
-| Method | How it works | Used for |
-|--------|-------------|----------|
-| **Exact match** | Normalized comparison + containment check | Recall dimension |
-| **Regex** | Pattern search against response | Temporal dimension |
-| **LLM judge** | Pending — not yet connected | Reasoning dimension (nuance score) |
-
-The **Verified Score** only counts exact/regex items. The **Nuance Score** only counts LLM-judged items (currently `null`/pending).
-
-## Manifest Schema
-
-Every run produces a signed JSON manifest:
-
-```json
-{
-  "manifest": {
-    "version": "1.0.0",
-    "run_id": "run_xxxxxxxxxxxx",
-    "system": { "name": "...", "adapter": "...", "version": "..." },
-    "benchmark": { "slug": "...", "name": "...", "version": "..." },
-    "harness": { "version": "0.1.0" },
-    "scores": {
-      "verified": { "recall": 85.7, "temporal": 66.7, "reasoning": null, "overall": 76.2 },
-      "nuance": { "recall": null, "temporal": null, "reasoning": null, "overall": null }
-    },
-    "summary": { "total_questions": 10, "scored_questions": 7, "pending_questions": 3, "passed": 6, "failed": 1 },
-    "traces": [...]
-  },
-  "manifest_hash": "sha256...",
-  "signature": "ed25519...",
-  "public_key": "hex...",
-  "signing_key_fingerprint": "07f49651a8736f77",
-  "signed_at": "2026-05-10T...",
-  "signing_mode": "local"
-}
-```
-
-## Signing
-
-### Local (Development)
-
-Ed25519 via PyNaCl. Generate a keypair, sign manifests locally, verify independently.
+Every run produces an Ed25519-signed manifest containing all inputs, outputs, scores, and failure traces. Anyone can verify:
 
 ```bash
-benchd keys generate --out ./keys
-benchd run --adapter echo --benchmark smoke-memory-v0 --key ./keys/private.key
-benchd verify ./runs/<run_id>/manifest.signed.json
+benchd verify ./runs/run_xxx/manifest.signed.json
 ```
 
-### VerifiedState (Production)
+## Current Results (May 2026)
 
-Production signing delegates to VerifiedState for independent third-party verification. Receipts are verifiable through VS explorer. _Not yet connected — stub in place._
+| # | System | LongMemEval | Status |
+|---|--------|-------------|--------|
+| 1 | LlamaIndex | 59.0% | Verified |
+| 1 | LangChain | 59.0% | Verified |
+| 3 | LLM Baseline | 57.6% | Verified |
+| 4 | Mem0 OSS | 32.4% | Verified |
 
-## Tests
+Full results at [benchd.ai/leaderboard](https://benchd.ai/leaderboard).
 
-```bash
-python -m pytest tests/ -v
-```
+## Links
 
-29 tests covering scoring, adapters, signing, manifest generation, and full runner pipeline.
-
-## What's NOT Built Yet
-
-- Real benchmark loaders (LongMemEval, LoCoMo, PersonaMem)
-- Real memory system adapters (Mem0, Letta, Zep)
-- LLM judge for nuance scoring
-- VerifiedState production signing integration
-- Modal sandbox execution
-- Frontend data ingestion pipeline
-
-This harness is the foundation. Everything else plugs in.
+- **Website**: [benchd.ai](https://benchd.ai)
+- **Leaderboard**: [benchd.ai/leaderboard](https://benchd.ai/leaderboard)
+- **Docs**: [benchd.ai/docs](https://benchd.ai/docs)
+- **Submit**: [benchd.ai/submit](https://benchd.ai/submit)

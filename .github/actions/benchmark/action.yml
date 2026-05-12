@@ -1,0 +1,135 @@
+name: "Bench'd Memory Benchmark"
+description: "Run Bench'd memory benchmarks against your AI memory system"
+branding:
+  icon: "bar-chart-2"
+  color: "orange"
+
+inputs:
+  adapter:
+    description: "Adapter name (e.g., mcp, mem0-local, echo)"
+    required: true
+    default: "mcp"
+  benchmark:
+    description: "Benchmark slug (e.g., longmemeval-v1, locomo-v1, smoke-memory-v0)"
+    required: true
+    default: "smoke-memory-v0"
+  endpoint:
+    description: "MCP endpoint URL (required for mcp adapter)"
+    required: false
+  adapter-config:
+    description: "JSON string of adapter configuration"
+    required: false
+  openrouter-key:
+    description: "OpenRouter API key for the LLM judge"
+    required: false
+  openai-key:
+    description: "OpenAI API key (alternative to OpenRouter)"
+    required: false
+  max-items:
+    description: "Limit number of benchmark items (for quick CI runs)"
+    required: false
+  judge:
+    description: "Enable LLM judge pipeline"
+    required: false
+    default: "true"
+  python-version:
+    description: "Python version to use"
+    required: false
+    default: "3.12"
+  submit:
+    description: "Submit results to benchd.ai after run"
+    required: false
+    default: "false"
+
+outputs:
+  run-id:
+    description: "The benchmark run ID"
+    value: ${{ steps.run.outputs.run-id }}
+  score:
+    description: "The verified score (0-100)"
+    value: ${{ steps.run.outputs.score }}
+  manifest-path:
+    description: "Path to the signed manifest"
+    value: ${{ steps.run.outputs.manifest-path }}
+  passed:
+    description: "Number of passed questions"
+    value: ${{ steps.run.outputs.passed }}
+  failed:
+    description: "Number of failed questions"
+    value: ${{ steps.run.outputs.failed }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ inputs.python-version }}
+
+    - name: Install benchd-harness
+      shell: bash
+      run: pip install benchd-harness
+
+    - name: Generate ephemeral signing keys
+      shell: bash
+      run: benchd keys generate --out ./benchd-keys
+
+    - name: Run benchmark
+      id: run
+      shell: bash
+      env:
+        OPENROUTER_API_KEY: ${{ inputs.openrouter-key }}
+        OPENAI_API_KEY: ${{ inputs.openai-key }}
+      run: |
+        # Build adapter config
+        ADAPTER_CONFIG='${{ inputs.adapter-config }}'
+        if [ -z "$ADAPTER_CONFIG" ] && [ -n "${{ inputs.endpoint }}" ]; then
+          ADAPTER_CONFIG='{"endpoint": "${{ inputs.endpoint }}"}'
+        fi
+
+        # Build command
+        CMD="benchd run -a ${{ inputs.adapter }} -b ${{ inputs.benchmark }} --key ./benchd-keys/private.key -o ./benchd-runs"
+
+        if [ "${{ inputs.judge }}" = "true" ]; then
+          CMD="$CMD --judge"
+        fi
+
+        if [ -n "${{ inputs.max-items }}" ]; then
+          CMD="$CMD -n ${{ inputs.max-items }}"
+        fi
+
+        if [ -n "$ADAPTER_CONFIG" ]; then
+          CMD="$CMD --adapter-config '$ADAPTER_CONFIG'"
+        fi
+
+        # Run and capture output
+        eval $CMD 2>&1 | tee benchd-output.txt
+
+        # Extract results from output
+        RUN_ID=$(grep -oP 'Run complete: \K\S+' benchd-output.txt || echo "unknown")
+        SCORE=$(grep -oP 'Verified Score:\s+\K[\d.]+' benchd-output.txt || echo "0")
+        PASSED=$(grep -oP 'Passed: \K\d+' benchd-output.txt || echo "0")
+        FAILED=$(grep -oP 'Failed: \K\d+' benchd-output.txt || echo "0")
+        MANIFEST_PATH="./benchd-runs/${RUN_ID}/manifest.signed.json"
+
+        echo "run-id=${RUN_ID}" >> $GITHUB_OUTPUT
+        echo "score=${SCORE}" >> $GITHUB_OUTPUT
+        echo "passed=${PASSED}" >> $GITHUB_OUTPUT
+        echo "failed=${FAILED}" >> $GITHUB_OUTPUT
+        echo "manifest-path=${MANIFEST_PATH}" >> $GITHUB_OUTPUT
+
+    - name: Submit results
+      if: inputs.submit == 'true'
+      shell: bash
+      run: |
+        MANIFEST_PATH="${{ steps.run.outputs.manifest-path }}"
+        if [ -f "$MANIFEST_PATH" ]; then
+          benchd submit "$MANIFEST_PATH" || true
+        fi
+
+    - name: Upload manifest artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: benchd-manifest-${{ steps.run.outputs.run-id }}
+        path: ./benchd-runs/*/manifest.signed.json
+        retention-days: 90

@@ -218,6 +218,88 @@ def keys_generate(out):
     click.echo(click.style("Keep your private key safe — do not commit it to version control.", fg="yellow"))
 
 
+@cli.command()
+@click.argument("manifest_path", type=click.Path(exists=True))
+@click.option("--api-url", default="https://benchd.ai/api/submit", help="Submission API endpoint")
+def submit(manifest_path, api_url):
+    """Submit a signed manifest to the Bench'd leaderboard."""
+    import requests as req
+
+    path = Path(manifest_path)
+    try:
+        data = json.loads(path.read_text())
+    except (json.JSONDecodeError, OSError) as exc:
+        click.echo(click.style(f"Error reading manifest: {exc}", fg="red"), err=True)
+        sys.exit(1)
+
+    # Validate before submitting
+    if "manifest" not in data or "signature" not in data:
+        click.echo(click.style("Invalid manifest: missing 'manifest' or 'signature' field", fg="red"), err=True)
+        sys.exit(1)
+
+    # Verify signature locally first
+    is_valid = verify_signature(data)
+    if not is_valid:
+        click.echo(click.style("Signature verification failed. Cannot submit.", fg="red"), err=True)
+        sys.exit(1)
+
+    # Extract summary for display
+    manifest = data.get("manifest", {})
+    if isinstance(manifest, str):
+        manifest = json.loads(manifest)
+
+    system_name = manifest.get("system", {}).get("name", "unknown")
+    benchmark_name = manifest.get("benchmark", {}).get("name", "unknown")
+    run_id = manifest.get("run_id", "unknown")
+    scores = manifest.get("scores", {})
+    nuance_overall = scores.get("nuance", {}).get("overall")
+    verified_overall = scores.get("verified", {}).get("overall")
+
+    click.echo(click.style("Manifest validated locally", fg="green"))
+    click.echo(f"  Run:       {run_id}")
+    click.echo(f"  System:    {system_name}")
+    click.echo(f"  Benchmark: {benchmark_name}")
+    if verified_overall is not None:
+        click.echo(f"  Verified:  {verified_overall:.1f}")
+    if nuance_overall is not None:
+        click.echo(f"  Nuance:    {nuance_overall:.1f}")
+    click.echo()
+
+    # Submit to API
+    click.echo(f"Submitting to {api_url}...")
+    try:
+        resp = req.post(
+            api_url,
+            json=data,
+            headers={"Content-Type": "application/json"},
+            timeout=30,
+        )
+        if resp.status_code == 200 or resp.status_code == 201:
+            click.echo(click.style("Submitted successfully!", fg="green", bold=True))
+            result = resp.json() if resp.headers.get("content-type", "").startswith("application/json") else {}
+            if result.get("url"):
+                click.echo(f"  View at: {result['url']}")
+        elif resp.status_code == 422:
+            click.echo(click.style("Submission rejected — invalid manifest format", fg="red"), err=True)
+            sys.exit(1)
+        else:
+            # API might not be connected yet — save locally
+            click.echo(click.style(
+                f"API returned {resp.status_code}. Manifest saved locally — "
+                "you can also upload at https://benchd.ai/submit",
+                fg="yellow"
+            ))
+    except req.exceptions.ConnectionError:
+        click.echo(click.style(
+            "Could not reach submission API. Manifest saved locally — "
+            "upload at https://benchd.ai/submit",
+            fg="yellow"
+        ))
+    except Exception as exc:
+        click.echo(click.style(f"Submission error: {exc}", fg="yellow"))
+        click.echo("Manifest saved locally — upload at https://benchd.ai/submit")
+
+
 @cli.command("list")
 def list_available():
     """List available adapters and benchmarks."""

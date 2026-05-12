@@ -5,22 +5,61 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "benchd-harness"
 version = "0.1.0"
-description = "Neutral benchmark harness for AI memory systems"
+description = "The neutral benchmark harness for AI memory systems. Run LongMemEval, LOCOMO, and more against any memory system."
 readme = "README.md"
 requires-python = ">=3.9"
 license = {text = "MIT"}
+authors = [
+    {name = "Bench'd", email = "hello@benchd.ai"},
+]
+keywords = [
+    "ai", "memory", "benchmark", "llm", "agent",
+    "longmemeval", "locomo", "mcp", "evaluation",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
 
 dependencies = [
     "click>=8.0",
     "pynacl>=1.5.0",
+    "requests>=2.28.0",
 ]
 
 [project.optional-dependencies]
 mem0 = ["mem0ai>=0.1.0"]
+langchain = ["langchain>=1.0", "langchain-openai>=1.0", "langchain-core>=1.0"]
+llamaindex = ["llama-index>=0.11", "llama-index-llms-openai>=0.3"]
+all = [
+    "mem0ai>=0.1.0",
+    "langchain>=1.0",
+    "langchain-openai>=1.0",
+    "langchain-core>=1.0",
+    "llama-index>=0.11",
+    "llama-index-llms-openai>=0.3",
+    "openai>=1.0",
+    "litellm>=1.0",
+]
 dev = [
     "pytest>=7.0",
     "pytest-cov>=4.0",
 ]
+
+[project.urls]
+Homepage = "https://benchd.ai"
+Documentation = "https://benchd.ai/docs"
+Repository = "https://github.com/benchdai/harness"
+Issues = "https://github.com/benchdai/harness/issues"
+Leaderboard = "https://benchd.ai/leaderboard"
 
 [project.scripts]
 benchd = "benchd_harness.cli:cli"
