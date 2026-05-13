@@ -1,0 +1,9 @@
+name: langmem
+adapter: langmem
+install: pip install langmem langgraph
+env:
+  OPENAI_API_KEY: required
+docker: null
+benchmarks:
+  - longmemeval-v1
+  - reliability-v1

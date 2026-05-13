@@ -1,0 +1,18 @@
+name: graphiti
+adapter: graphiti
+install: pip install graphiti-core
+env:
+  OPENAI_API_KEY: required
+  NEO4J_URI: bolt://localhost:7687
+  NEO4J_USER: neo4j
+  NEO4J_PASSWORD: benchdpass123
+docker:
+  image: neo4j:5
+  ports: ["7474:7474", "7687:7687"]
+  env:
+    NEO4J_AUTH: neo4j/benchdpass123
+  wait_for: http://localhost:7474
+  wait_timeout: 30
+benchmarks:
+  - longmemeval-v1
+  - reliability-v1

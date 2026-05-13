@@ -1,0 +1,13 @@
+name: letta
+adapter: letta
+install: pip install letta-client
+env:
+  OPENROUTER_API_KEY: required
+docker:
+  image: letta/letta:latest
+  ports: ["8283:8283"]
+  wait_for: http://localhost:8283
+  wait_timeout: 60
+benchmarks:
+  - longmemeval-v1
+  - reliability-v1

@@ -1,0 +1,13 @@
+name: khoj
+adapter: khoj
+install: pip install khoj
+docker:
+  image: ghcr.io/khoj-ai/khoj:latest
+  ports: ["42110:42110"]
+  env:
+    KHOJ_ANONYMOUS_MODE: "true"
+  wait_for: http://localhost:42110/api/health
+  wait_timeout: 60
+benchmarks:
+  - longmemeval-v1
+  - reliability-v1

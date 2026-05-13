@@ -1,0 +1,9 @@
+name: autogpt-memory
+adapter: autogpt-memory
+install: pip install chromadb
+env:
+  OPENROUTER_API_KEY: required
+docker: null
+benchmarks:
+  - longmemeval-v1
+  - reliability-v1

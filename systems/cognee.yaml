@@ -1,0 +1,9 @@
+name: cognee
+adapter: cognee
+install: pip install cognee
+env:
+  OPENAI_API_KEY: required
+docker: null
+benchmarks:
+  - longmemeval-v1
+  - reliability-v1

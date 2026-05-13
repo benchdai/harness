@@ -1,0 +1,9 @@
+name: llamaindex-memory
+adapter: llamaindex-memory
+install: pip install llama-index llama-index-llms-openai
+env:
+  OPENROUTER_API_KEY: required
+docker: null
+benchmarks:
+  - longmemeval-v1
+  - reliability-v1

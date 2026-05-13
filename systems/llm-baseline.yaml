@@ -1,0 +1,9 @@
+name: llm-baseline
+adapter: llm-baseline
+install: pip install openai
+env:
+  OPENROUTER_API_KEY: required
+docker: null
+benchmarks:
+  - longmemeval-v1
+  - reliability-v1

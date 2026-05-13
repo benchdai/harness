@@ -1,0 +1,9 @@
+name: mem0-local
+adapter: mem0-local
+install: pip install mem0ai
+env:
+  OPENAI_API_KEY: required
+docker: null
+benchmarks:
+  - longmemeval-v1
+  - reliability-v1

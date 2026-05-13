@@ -300,6 +300,38 @@ def submit(manifest_path, api_url):
         click.echo("Manifest saved locally — upload at https://benchd.ai/submit")
 
 
+@cli.command("auto-run")
+@click.option("--systems-dir", "-s", type=click.Path(exists=True), default="./systems", help="Directory with system YAML manifests")
+@click.option("--out", "-o", type=click.Path(), default="./runs", help="Output directory for results")
+@click.option("--key", "-k", type=click.Path(exists=True), default="./keys/private.key", help="Path to private key")
+@click.option("--judge/--no-judge", default=True, help="Enable LLM judge pipeline")
+@click.option("--system", "system_names", multiple=True, help="Run only specific systems (can repeat)")
+@click.option("--benchmark", "benchmark_slugs", multiple=True, help="Run only specific benchmarks (can repeat)")
+@click.option("--time-series", type=click.Path(), default=None, help="Path to time series JSON file")
+def auto_run_cmd(systems_dir, out, key, judge, system_names, benchmark_slugs, time_series):
+    """Run benchmarks for all systems defined in YAML manifests."""
+    try:
+        import yaml  # noqa: F401
+    except ImportError:
+        click.echo(click.style("PyYAML required. Install: pip install pyyaml", fg="red"), err=True)
+        sys.exit(1)
+
+    from benchd_harness.auto_runner import auto_run
+
+    results = auto_run(
+        systems_dir=Path(systems_dir),
+        output_dir=Path(out),
+        key_path=Path(key),
+        use_judge=judge,
+        systems=list(system_names) if system_names else None,
+        benchmarks=list(benchmark_slugs) if benchmark_slugs else None,
+        time_series_path=Path(time_series) if time_series else None,
+    )
+
+    if not results:
+        sys.exit(1)
+
+
 @cli.command("list")
 def list_available():
     """List available adapters and benchmarks."""

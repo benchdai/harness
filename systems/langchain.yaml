@@ -1,0 +1,9 @@
+name: langchain-memory
+adapter: langchain-memory
+install: pip install langchain langchain-openai langchain-core
+env:
+  OPENROUTER_API_KEY: required
+docker: null
+benchmarks:
+  - longmemeval-v1
+  - reliability-v1
