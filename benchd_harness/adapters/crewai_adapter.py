@@ -2,6 +2,8 @@
 CrewAI Memory adapter for Bench'd harness.
 
 Uses CrewAI's unified Memory class with remember/recall/reset.
+Batches entire conversations into single remember() calls to avoid
+per-turn LLM overhead (~1.8s per remember() call).
 
 Requires:
   pip install crewai
@@ -47,13 +49,24 @@ class CrewAIMemoryAdapter(BaseAdapter):
             raise RuntimeError("CrewAI Memory requires OPENAI_API_KEY for embeddings.")
 
         self._memory = Memory()
+        # Clean slate
+        try:
+            self._memory.reset()
+        except Exception:
+            pass
 
     def reset(self) -> None:
         if self._memory is not None:
             try:
                 self._memory.reset()
             except Exception:
-                pass
+                # Recreate memory instance for clean state
+                try:
+                    from crewai.memory import Memory
+                    self._memory.close()
+                    self._memory = Memory()
+                except Exception:
+                    pass
 
     def teardown(self) -> None:
         if self._memory is not None:
@@ -67,10 +80,17 @@ class CrewAIMemoryAdapter(BaseAdapter):
         if self._memory is None:
             raise RuntimeError("Adapter not initialized. Call setup() first.")
 
+        # Batch all turns into a single remember() call to avoid
+        # per-turn LLM overhead (each remember() takes ~1.8s)
+        lines = []
         for turn in turns:
             role = turn.get("role", "user")
             content = turn.get("content", "")
-            self._memory.remember(f"[{role}]: {content}")
+            lines.append(f"[{role}]: {content}")
+
+        transcript = "\n".join(lines)
+        if transcript.strip():
+            self._memory.remember(transcript)
 
     def recall(self, query: str) -> str:
         if self._memory is None:
@@ -85,8 +105,8 @@ class CrewAIMemoryAdapter(BaseAdapter):
                         texts.append(r)
                     elif hasattr(r, "content"):
                         texts.append(str(r.content))
-                    elif hasattr(r, "text"):
-                        texts.append(str(r.text))
+                    elif hasattr(r, "record") and hasattr(r.record, "content"):
+                        texts.append(str(r.record.content))
                     elif isinstance(r, dict):
                         texts.append(r.get("content", r.get("text", str(r))))
                     else:
