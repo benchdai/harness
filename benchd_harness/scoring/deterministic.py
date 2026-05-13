@@ -43,6 +43,8 @@ def score_response(
         return _score_exact(response, expected_answer, max_score)
     elif scoring_method == "regex":
         return _score_regex(response, expected_answer, max_score)
+    elif scoring_method == "reliability_trap":
+        return _score_reliability_trap(response, expected_answer, max_score)
     elif scoring_method == "llm":
         return _score_llm_pending(max_score)
     else:
@@ -83,6 +85,36 @@ def _score_regex(response: str, expected_answer: str, max_score: float) -> Score
         max_score=max_score,
         scoring_method="regex",
         judge_reasoning=None,
+        status="scored",
+    )
+
+
+def _score_reliability_trap(response: str, expected_answer: str, max_score: float) -> ScoreResult:
+    """
+    Score a reliability trap question.
+
+    expected_answer contains pipe-separated keywords that indicate correct behavior.
+    The response PASSES if it contains any expected keyword (system behaved correctly).
+    """
+    norm_response = _normalize(response)
+    expected_keywords = [_normalize(kw) for kw in expected_answer.split("|") if kw.strip()]
+
+    # Check if any expected keyword is present (system did the right thing)
+    is_correct = any(kw in norm_response for kw in expected_keywords)
+
+    # Generate reasoning
+    if is_correct:
+        matched = [kw for kw in expected_keywords if kw in norm_response]
+        reasoning = f"PASS: Response contains expected indicator: '{matched[0]}'"
+    else:
+        reasoning = f"FAIL: Response did not contain any expected keywords: {expected_keywords}"
+
+    return ScoreResult(
+        scored_correct=is_correct,
+        score=max_score if is_correct else 0.0,
+        max_score=max_score,
+        scoring_method="reliability_trap",
+        judge_reasoning=reasoning,
         status="scored",
     )
 

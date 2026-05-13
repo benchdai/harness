@@ -6,6 +6,7 @@ from .base import BaseBenchmark, BenchmarkItem
 from .smoke import SmokeBenchmark
 from .longmemeval import LongMemEvalBenchmark
 from .locomo import LoCoMoBenchmark
+from .reliability import ReliabilityBenchmark
 
 __all__ = [
     "BaseBenchmark",
@@ -21,6 +22,7 @@ _BUILTIN_BENCHMARKS = {
     "smoke-memory-v0": SmokeBenchmark,
     "longmemeval-v1": LongMemEvalBenchmark,
     "locomo-v1": LoCoMoBenchmark,
+    "reliability-v1": ReliabilityBenchmark,
 }
 
 
