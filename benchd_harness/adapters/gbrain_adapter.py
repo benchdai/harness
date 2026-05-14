@@ -52,7 +52,7 @@ class GBrainAdapter(BaseAdapter):
         self._gbrain_path: Optional[str] = None
         self._page_slugs: list[str] = []
 
-    def _run_gbrain(self, *args: str, stdin: str | None = None, timeout: int = 30) -> str:
+    def _run_gbrain(self, *args: str, stdin: str | None = None, timeout: int = 90) -> str:
         """Run a gbrain CLI command and return stdout."""
         cmd = ["bun", "run", "src/cli.ts", *args]
         result = subprocess.run(
