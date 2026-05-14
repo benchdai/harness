@@ -1,0 +1,35 @@
+name: gbrain
+adapter: gbrain
+install: "git clone https://github.com/garrytan/gbrain /tmp/gbrain && cd /tmp/gbrain && bun install && bun run src/cli.ts init --pglite"
+
+tracks:
+  - knowledge_base
+  - agent_workflow
+
+runtime:
+  type: mcp_stdio
+  command: "bun run src/cli.ts serve"
+  cwd: "/tmp/gbrain"
+  lifecycle: per_run_long_lived
+  startup_timeout_seconds: 180
+  query_timeout_seconds: 60
+
+isolation:
+  strategy: full_database_wipe
+  wipe_paths:
+    - "~/.gbrain/pglite"
+  measure_cold_start: true
+
+env:
+  GBRAIN_PATH: /tmp/gbrain
+
+capabilities:
+  reset: partial
+  namespaces: false
+  delete: true
+  update: true
+  citations: true
+
+benchmarks:
+  - knowledge-retrieval-v1
+  - reliability-v1
