@@ -346,6 +346,51 @@ def list_available():
         click.echo(f"  - {slug}")
 
 
+@cli.group()
+def adapter():
+    """Adapter SDK — scaffold, test, and validate adapters."""
+    pass
+
+
+@adapter.command("init")
+@click.argument("name")
+@click.option("--out", "-o", type=click.Path(), default=".", help="Output directory")
+def adapter_init(name, out):
+    """Scaffold a new adapter with template files."""
+    from benchd_harness.adapter_sdk import init_adapter
+
+    result = init_adapter(name, Path(out))
+
+    click.echo(click.style(f"Adapter scaffolded: {result['class_name']}", fg="green", bold=True))
+    click.echo()
+    click.echo(f"  Adapter:  {click.style(result['adapter_path'], fg='blue')}")
+    click.echo(f"  Manifest: {click.style(result['manifest_path'], fg='blue')}")
+    click.echo()
+    click.echo("Next steps:")
+    click.echo("  1. Implement the TODO sections in the adapter file")
+    click.echo("  2. Register it in benchd_harness/adapters/__init__.py:")
+    click.echo(click.style(result['register_snippet'], fg='yellow'))
+    click.echo(f"  3. Test: benchd adapter validate {result['slug']}")
+    click.echo(f"  4. Run:  benchd run -a {result['slug']} -b smoke-memory-v0")
+
+
+@adapter.command("validate")
+@click.argument("name")
+def adapter_validate(name):
+    """Validate an adapter implements the required interface."""
+    from benchd_harness.adapter_sdk import validate_adapter
+
+    issues = validate_adapter(name)
+
+    if not issues:
+        click.echo(click.style(f"VALID — adapter '{name}' passes all checks", fg="green", bold=True))
+    else:
+        click.echo(click.style(f"ISSUES with adapter '{name}':", fg="red", bold=True))
+        for issue in issues:
+            click.echo(click.style(f"  - {issue}", fg="red"))
+        sys.exit(1)
+
+
 def main():
     """Entry point for the CLI."""
     cli()
