@@ -25,6 +25,9 @@ from benchd_harness.benchmarks import get_benchmark
 from benchd_harness.signing.local import LocalSigner
 from benchd_harness.runner import BenchmarkRunner
 from benchd_harness.scoring.llm_judge import LLMJudgeConfig
+from benchd_harness.runtime.base import RuntimeConfig, FailureType
+from benchd_harness.runtime import get_runtime
+from benchd_harness.runtime.isolation import run_isolation_check, classify_failure
 
 
 def load_system_manifests(systems_dir: Path) -> list[dict[str, Any]]:
@@ -249,17 +252,104 @@ def auto_run(
             ))
             continue
 
-        # Start Docker if needed
-        container_name = None
-        docker_config = manifest.get("docker")
-        if docker_config:
-            click.echo(f"  Starting Docker: {docker_config['image']}...")
-            container_name = start_docker(manifest)
-            if container_name is None and docker_config:
-                click.echo(click.style("  Skipping — Docker failed to start", fg="yellow"))
+        # Initialize runtime from manifest
+        runtime_config_data = manifest.get("runtime", {})
+        runtime_type = runtime_config_data.get("type", "python_library")
+
+        # Build RuntimeConfig from manifest
+        docker_config = manifest.get("docker") or {}
+        isolation_config = manifest.get("isolation") or {}
+
+        runtime_config = RuntimeConfig(
+            type=runtime_type,
+            command=runtime_config_data.get("command", ""),
+            lifecycle=runtime_config_data.get("lifecycle", "per_run_long_lived"),
+            startup_timeout_seconds=runtime_config_data.get("startup_timeout_seconds", 120),
+            query_timeout_seconds=runtime_config_data.get("query_timeout_seconds", 60),
+            isolation_strategy=isolation_config.get("strategy", "adapter_reset"),
+            wipe_paths=isolation_config.get("wipe_paths", []),
+            healthcheck_url=docker_config.get("wait_for", runtime_config_data.get("healthcheck_url", "")),
+            docker_image=docker_config.get("image", runtime_config_data.get("docker_image", "")),
+            docker_ports=docker_config.get("ports", []),
+            docker_env=docker_config.get("env", {}),
+            cwd=runtime_config_data.get("cwd", ""),
+        )
+
+        # Create runtime executor
+        try:
+            runtime = get_runtime(runtime_config)
+        except ValueError:
+            # Fallback to old Docker logic for manifests without runtime config
+            runtime = None
+
+        runtime_started = False
+        healthcheck_passed = False
+
+        if runtime:
+            # Runtime lifecycle: prepare → start → healthcheck
+            click.echo(f"  Runtime: {runtime_type}")
+
+            prep = runtime.prepare()
+            if not prep.success:
+                click.echo(click.style(f"  Skipping — runtime prepare failed: {prep.message}", fg="yellow"))
                 continue
 
+            start_result = runtime.start()
+            if not start_result.success:
+                click.echo(click.style(f"  Skipping — runtime start failed: {start_result.message}", fg="yellow"))
+                continue
+            runtime_started = True
+            if start_result.startup_ms > 0:
+                click.echo(f"  Started in {start_result.startup_ms:.0f}ms")
+
+            health = runtime.healthcheck()
+            if not health.success:
+                click.echo(click.style(f"  Skipping — healthcheck failed: {health.message}", fg="yellow"))
+                runtime.stop()
+                continue
+            healthcheck_passed = True
+        else:
+            # Legacy: Start Docker if needed
+            container_name = None
+            if docker_config and docker_config.get("image"):
+                click.echo(f"  Starting Docker: {docker_config['image']}...")
+                container_name = start_docker(manifest)
+                if container_name is None:
+                    click.echo(click.style("  Skipping — Docker failed to start", fg="yellow"))
+                    continue
+            runtime_started = True
+            healthcheck_passed = True
+
         try:
+            # Run isolation check
+            try:
+                adapter_instance = get_adapter(manifest["adapter"])
+                adapter_instance.setup()
+
+                isolation_probe = run_isolation_check(adapter_instance.recall)
+                if not isolation_probe.clean:
+                    click.echo(click.style(
+                        f"  ISOLATION FAILED: {isolation_probe.evidence}", fg="red"
+                    ))
+                    # Attempt wipe and retry
+                    if runtime and runtime_config.isolation_strategy == "full_database_wipe":
+                        click.echo("  Wiping database and retrying...")
+                        runtime.wipe()
+                        adapter_instance.teardown()
+                        adapter_instance.setup()
+                        isolation_probe = run_isolation_check(adapter_instance.recall)
+                        if not isolation_probe.clean:
+                            click.echo(click.style("  Isolation still failed after wipe. Skipping.", fg="red"))
+                            continue
+                    else:
+                        click.echo(click.style("  Continuing with warning — results may be contaminated", fg="yellow"))
+                else:
+                    click.echo(click.style("  Isolation check: CLEAN", fg="green"))
+
+                adapter_instance.teardown()
+            except Exception as e:
+                click.echo(click.style(f"  Isolation check error: {e} — continuing", fg="yellow"))
+
             results = run_system(
                 manifest, output_dir, signer,
                 use_judge=use_judge,
@@ -267,8 +357,10 @@ def auto_run(
             )
             all_results.extend(results)
         finally:
-            # Tear down Docker
-            if container_name:
+            if runtime:
+                runtime.cleanup()
+                runtime.stop()
+            elif 'container_name' in dir() and container_name:
                 docker_name = f"benchd-{manifest['name'].replace(' ', '-')}"
                 click.echo(f"  Stopping Docker: {docker_name}")
                 stop_docker(docker_name)
