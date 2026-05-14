@@ -156,6 +156,14 @@ try:
 except ImportError:
     pass
 
+try:
+    from .gbrain_adapter import GBrainAdapter
+
+    _BUILTIN_ADAPTERS["gbrain"] = GBrainAdapter
+    __all__ = [*__all__, "GBrainAdapter"]
+except ImportError:
+    pass
+
 from .mcp_adapter import MCPAdapter
 
 _BUILTIN_ADAPTERS["mcp"] = MCPAdapter
