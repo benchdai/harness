@@ -113,7 +113,7 @@ class GBrainAdapter(BaseAdapter):
         slug = f"benchd-{uuid.uuid4().hex[:8]}"
 
         try:
-            self._run_gbrain("put", slug, stdin=text, timeout=30)
+            self._run_gbrain("put", slug, stdin=text, timeout=90)
             self._page_slugs.append(slug)
         except Exception as e:
             raise RuntimeError(f"gbrain ingest failed: {e}")
@@ -123,7 +123,7 @@ class GBrainAdapter(BaseAdapter):
             raise RuntimeError("Adapter not initialized. Call setup() first.")
 
         try:
-            result = self._run_gbrain("query", query, timeout=30)
+            result = self._run_gbrain("query", query, timeout=90)
             # gbrain query returns lines like:
             # [0.3964] slug -- content
             # Extract the content parts
