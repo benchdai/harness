@@ -164,6 +164,14 @@ try:
 except ImportError:
     pass
 
+try:
+    from .memoripy_adapter import MemoripyAdapter
+
+    _BUILTIN_ADAPTERS["memoripy"] = MemoripyAdapter
+    __all__ = [*__all__, "MemoripyAdapter"]
+except ImportError:
+    pass
+
 from .mcp_adapter import MCPAdapter
 
 _BUILTIN_ADAPTERS["mcp"] = MCPAdapter
