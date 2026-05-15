@@ -41,8 +41,8 @@ class MemoripyAdapter(BaseAdapter):
         if not api_key:
             raise RuntimeError("Memoripy requires OPENAI_API_KEY.")
 
-        chat_model = OpenAIChatModel(api_key=api_key, model="gpt-4o-mini")
-        embed_model = OpenAIEmbeddingModel(api_key=api_key, model="text-embedding-3-small")
+        chat_model = OpenAIChatModel(api_key=api_key, model_name="gpt-4o-mini")
+        embed_model = OpenAIEmbeddingModel(api_key=api_key, model_name="text-embedding-3-small")
 
         # Clean storage
         import pathlib
@@ -62,8 +62,8 @@ class MemoripyAdapter(BaseAdapter):
                 import pathlib
                 pathlib.Path("/tmp/benchd_memoripy.json").unlink(missing_ok=True)
                 api_key = os.environ.get("OPENAI_API_KEY", "")
-                chat_model = OpenAIChatModel(api_key=api_key, model="gpt-4o-mini")
-                embed_model = OpenAIEmbeddingModel(api_key=api_key, model="text-embedding-3-small")
+                chat_model = OpenAIChatModel(api_key=api_key, model_name="gpt-4o-mini")
+                embed_model = OpenAIEmbeddingModel(api_key=api_key, model_name="text-embedding-3-small")
                 self._memory = MemoryManager(
                     chat_model=chat_model,
                     embedding_model=embed_model,
