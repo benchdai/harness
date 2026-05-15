@@ -9,6 +9,8 @@ from .locomo import LoCoMoBenchmark
 from .reliability import ReliabilityBenchmark
 from .knowledge_retrieval import KnowledgeRetrievalBenchmark
 from .knowledge_scale import KnowledgeScaleBenchmark
+from .multi_agent import SemanticRBACBenchmark, TruthArbitrationBenchmark, MemoryPoisoningBenchmark
+from .budget_curves import BudgetCurvesBenchmark
 
 __all__ = [
     "BaseBenchmark",
@@ -27,6 +29,10 @@ _BUILTIN_BENCHMARKS = {
     "reliability-v1": ReliabilityBenchmark,
     "knowledge-retrieval-v1": KnowledgeRetrievalBenchmark,
     "knowledge-scale-v1": KnowledgeScaleBenchmark,
+    "semantic-rbac-v1": SemanticRBACBenchmark,
+    "truth-arbitration-v1": TruthArbitrationBenchmark,
+    "memory-poisoning-v1": MemoryPoisoningBenchmark,
+    "budget-curves-v1": BudgetCurvesBenchmark,
 }
 
 
