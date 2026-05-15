@@ -37,20 +37,26 @@ from typing import Any, Dict, List, Optional
 from benchd_harness.adapters.base import BaseAdapter
 
 
+import threading
+
+# Dedicated event loop running in a background thread for async operations
+_LOOP = None
+_THREAD = None
+
+def _get_loop():
+    """Get or create a dedicated event loop in a background thread."""
+    global _LOOP, _THREAD
+    if _LOOP is None or not _LOOP.is_running():
+        _LOOP = asyncio.new_event_loop()
+        _THREAD = threading.Thread(target=_LOOP.run_forever, daemon=True)
+        _THREAD.start()
+    return _LOOP
+
 def _run_async(coro):
-    """Run an async coroutine synchronously, handling existing event loops."""
-    try:
-        loop = asyncio.get_running_loop()
-    except RuntimeError:
-        loop = None
-
-    if loop and loop.is_running():
-        import concurrent.futures
-
-        with concurrent.futures.ThreadPoolExecutor(max_workers=1) as pool:
-            return pool.submit(asyncio.run, coro).result()
-    else:
-        return asyncio.run(coro)
+    """Run an async coroutine on the dedicated background loop."""
+    loop = _get_loop()
+    future = asyncio.run_coroutine_threadsafe(coro, loop)
+    return future.result(timeout=120)
 
 
 class GraphitiAdapter(BaseAdapter):
@@ -88,7 +94,7 @@ class GraphitiAdapter(BaseAdapter):
         except ImportError:
             return None
 
-    def __init__(self, group_id: str | None = None):
+    def __init__(self, group_id: Optional[str] = None):
         self._group_id = group_id or os.environ.get("GRAPHITI_GROUP_ID", "benchd")
         self._client = None  # Graphiti instance, lazily created in setup()
         self._episode_count = 0

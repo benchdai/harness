@@ -107,9 +107,10 @@ class LettaAdapter(BaseAdapter):
             "include_base_tools": True,
         }
 
-        # If an OpenRouter key is available, configure the LLM to route
-        # through OpenRouter.
+        # Configure LLM — always required now
         openrouter_key = os.environ.get("OPENROUTER_API_KEY")
+        openai_key = os.environ.get("OPENAI_API_KEY")
+
         if openrouter_key:
             create_kwargs["llm_config"] = {
                 "model": self._model,
@@ -117,8 +118,16 @@ class LettaAdapter(BaseAdapter):
                 "model_endpoint": "https://openrouter.ai/api/v1",
                 "context_window": 128000,
             }
-            # Letta may also need the key set as an env var for the server
-            # to pick up; document this for users.
+        elif openai_key:
+            create_kwargs["llm_config"] = {
+                "model": "gpt-4o-mini",
+                "model_endpoint_type": "openai",
+                "model_endpoint": "https://api.openai.com/v1",
+                "context_window": 128000,
+            }
+        else:
+            # Try with just model name — Letta server may have defaults
+            create_kwargs["model"] = "letta/letta-free"
 
         agent = self._client.agents.create(**create_kwargs)
         self._agent_id = agent.id
