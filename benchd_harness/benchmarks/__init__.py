@@ -8,6 +8,7 @@ from .longmemeval import LongMemEvalBenchmark
 from .locomo import LoCoMoBenchmark
 from .reliability import ReliabilityBenchmark
 from .knowledge_retrieval import KnowledgeRetrievalBenchmark
+from .knowledge_scale import KnowledgeScaleBenchmark
 
 __all__ = [
     "BaseBenchmark",
@@ -25,6 +26,7 @@ _BUILTIN_BENCHMARKS = {
     "locomo-v1": LoCoMoBenchmark,
     "reliability-v1": ReliabilityBenchmark,
     "knowledge-retrieval-v1": KnowledgeRetrievalBenchmark,
+    "knowledge-scale-v1": KnowledgeScaleBenchmark,
 }
 
 
