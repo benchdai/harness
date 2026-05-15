@@ -16,3 +16,6 @@ docker:
 benchmarks:
   - longmemeval-v1
   - reliability-v1
+  - truth-arbitration-v1
+  - memory-poisoning-v1
+  - budget-curves-v1
