@@ -97,7 +97,7 @@ class MemoripyAdapter(BaseAdapter):
             raise RuntimeError("Not initialized.")
 
         try:
-            results = self._memory.retrieve_relevant_interactions(query, top_k=5)
+            results = self._memory.retrieve_relevant_interactions(query, similarity_threshold=30)
             if isinstance(results, list):
                 texts = []
                 for r in results:
