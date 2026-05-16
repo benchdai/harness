@@ -60,11 +60,11 @@ class QuivrAdapter(BaseAdapter):
             try:
                 from quivr_core import Brain
                 import tempfile as _tf
-        _seed = _tf.NamedTemporaryFile(mode="w", suffix=".txt", delete=False)
-        _seed.write("Bench'd evaluation seed document.")
-        _seed.close()
-        self._brain = Brain.from_files(name="benchd-eval", file_paths=[_seed.name])
-        os.unlink(_seed.name)
+                _seed = _tf.NamedTemporaryFile(mode="w", suffix=".txt", delete=False)
+                _seed.write("Bench'd evaluation seed document.")
+                _seed.close()
+                self._brain = Brain.from_files(name="benchd-eval", file_paths=[_seed.name])
+                os.unlink(_seed.name)
             except Exception:
                 pass
 
