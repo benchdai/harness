@@ -172,6 +172,30 @@ try:
 except ImportError:
     pass
 
+try:
+    from .quivr_adapter import QuivrAdapter
+
+    _BUILTIN_ADAPTERS["quivr"] = QuivrAdapter
+    __all__ = [*__all__, "QuivrAdapter"]
+except ImportError:
+    pass
+
+try:
+    from .anything_llm_adapter import AnythingLLMAdapter
+
+    _BUILTIN_ADAPTERS["anything-llm"] = AnythingLLMAdapter
+    __all__ = [*__all__, "AnythingLLMAdapter"]
+except ImportError:
+    pass
+
+try:
+    from .ragflow_adapter import RagFlowAdapter
+
+    _BUILTIN_ADAPTERS["ragflow"] = RagFlowAdapter
+    __all__ = [*__all__, "RagFlowAdapter"]
+except ImportError:
+    pass
+
 from .mcp_adapter import MCPAdapter
 
 _BUILTIN_ADAPTERS["mcp"] = MCPAdapter
