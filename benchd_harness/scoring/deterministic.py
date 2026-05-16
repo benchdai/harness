@@ -4,6 +4,8 @@ from dataclasses import dataclass
 from typing import Optional, List
 import re
 
+from benchd_harness.failure_taxonomy import classify_failure
+
 
 @dataclass
 class ScoreResult:
@@ -40,15 +42,27 @@ def score_response(
     expected_answer = str(expected_answer)
 
     if scoring_method == "exact":
-        return _score_exact(response, expected_answer, max_score)
+        result = _score_exact(response, expected_answer, max_score)
     elif scoring_method == "regex":
-        return _score_regex(response, expected_answer, max_score)
+        result = _score_regex(response, expected_answer, max_score)
     elif scoring_method == "reliability_trap":
-        return _score_reliability_trap(response, expected_answer, max_score)
+        result = _score_reliability_trap(response, expected_answer, max_score)
     elif scoring_method == "llm":
-        return _score_llm_pending(max_score)
+        result = _score_llm_pending(max_score)
     else:
         raise ValueError(f"Unknown scoring_method: {scoring_method!r}")
+
+    # Classify failures with a reason code
+    if not result.scored_correct and result.status == "scored":
+        failure_code = classify_failure(
+            expected=expected_answer,
+            actual=response,
+            raw_recall="",  # not available at this level
+            dimension="",
+        )
+        result.judge_reasoning = f"failure_code:{failure_code.value}"
+
+    return result
 
 
 def _score_exact(response: str, expected_answer: str, max_score: float) -> ScoreResult:

@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "benchd-harness"
-version = "0.2.0"
+version = "0.3.0"
 description = "The neutral benchmark harness for AI memory systems. Run LongMemEval, LOCOMO, and more against any memory system."
 readme = "README.md"
 requires-python = ">=3.9"
