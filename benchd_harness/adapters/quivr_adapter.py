@@ -48,13 +48,23 @@ class QuivrAdapter(BaseAdapter):
         if not api_key:
             raise RuntimeError("Quivr requires OPENAI_API_KEY.")
 
-        self._brain = Brain.from_files(name="benchd-eval", file_paths=[])
+        import tempfile as _tf
+        _seed = _tf.NamedTemporaryFile(mode="w", suffix=".txt", delete=False)
+        _seed.write("Bench'd evaluation seed document.")
+        _seed.close()
+        self._brain = Brain.from_files(name="benchd-eval", file_paths=[_seed.name])
+        os.unlink(_seed.name)
 
     def reset(self) -> None:
         if self._brain:
             try:
                 from quivr_core import Brain
-                self._brain = Brain.from_files(name="benchd-eval", file_paths=[])
+                import tempfile as _tf
+        _seed = _tf.NamedTemporaryFile(mode="w", suffix=".txt", delete=False)
+        _seed.write("Bench'd evaluation seed document.")
+        _seed.close()
+        self._brain = Brain.from_files(name="benchd-eval", file_paths=[_seed.name])
+        os.unlink(_seed.name)
             except Exception:
                 pass
 
