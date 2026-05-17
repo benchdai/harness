@@ -8,7 +8,9 @@ Can be imported independently from the rest of the harness:
 
     from benchd_harness.proofmeter import ProofMeterClient
 
-Patent pending.
+Patent Pending. ProofMeter is a patent-pending method for separating
+cryptographically-attested resource consumption from policy-dependent
+valuation in AI agent systems.
 """
 
 from .client import ProofMeterClient

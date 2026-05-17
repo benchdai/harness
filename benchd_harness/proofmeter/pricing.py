@@ -17,9 +17,12 @@ ProofMeter receipts always record:
   3. Customer can override with their own pricing table
 
 The receipt format distinguishes:
-  - pricing_source: "list_price" (our estimate)
-  - pricing_source: "customer_provided" (their rates)
-  - pricing_source: "provider_reported" (if API returns actual cost)
+  - pricing_source: "public_estimate" (our list prices)
+  - pricing_source: "customer_price_book" (their rates)
+  - pricing_source: "usage_only" (no cost calculation)
+  - pricing_source: "invoice_reconciled" (matched to billing, future)
+
+Patent Pending.
 """
 
 from __future__ import annotations

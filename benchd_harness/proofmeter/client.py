@@ -12,6 +12,8 @@ Usage:
     budget = client.authorize_budget(agent_id="benchd-runner", max_budget_cents=500)
     receipt = client.record_spend(...)
     settlement = client.settle(task_id="run_abc123")
+
+Patent Pending.
 """
 
 from __future__ import annotations

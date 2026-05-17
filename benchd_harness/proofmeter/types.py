@@ -9,6 +9,8 @@ Design principles:
 5. Non-token usage units are first-class (API calls, images, compute seconds)
 6. Every receipt is hash-chained and independently verifiable
 7. Budget enforcement is denominated in the declared pricing basis
+
+Patent Pending.
 """
 
 from __future__ import annotations

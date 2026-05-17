@@ -1,6 +1,6 @@
 # Bench'd Harness
 
-The neutral benchmark harness for AI memory systems. Every score is independently run, cryptographically signed, and verifiable by anyone.
+The neutral benchmark harness for AI memory systems. Every score is independently run, cryptographically signed, and verifiable by anyone. Spend attestation powered by ProofMeter (Patent Pending).
 
 **[Leaderboard](https://benchd.ai/leaderboard)** | **[Docs](https://benchd.ai/docs)** | **[Methodology](https://benchd.ai/methodology)** | **[Submit Results](https://benchd.ai/submit)**
 
@@ -88,6 +88,26 @@ Register in `benchd_harness/adapters/__init__.py` and run with `benchd run -a my
 | `benchd verify` | Verify a signed manifest |
 | `benchd keys generate` | Generate Ed25519 signing keys |
 | `benchd list` | List available adapters and benchmarks |
+| `benchd baselines` | Recompute track baselines from scored manifests |
+
+## ProofMeter — Spend Attestation (Patent Pending)
+
+Track the cost of benchmark runs with cryptographic receipts. ProofMeter separates proven usage (tokens, provider, model) from estimated cost (derived from a declared pricing table).
+
+```bash
+# Run with $5 budget and spend tracking
+benchd run -a verifiedstate -b reliability-v1 --budget 5.00
+
+# Custom enterprise pricing
+benchd run -a my-adapter -b longmemeval-v1 --budget 10.00 --pricing my-rates.json
+
+# Usage tracking only (no cost calculation)
+benchd run -a my-adapter -b smoke-memory-v0 --pricing-mode usage-only
+```
+
+The signed manifest includes a `proofmeter` section with proven token counts, estimated cost (labeled with pricing basis and confidence), and a Merkle-rooted settlement.
+
+[Receipt Specification](https://benchd.ai/methodology/receipt-spec) | [Trust Boundaries](https://benchd.ai/methodology/trust-boundaries)
 
 ## Signing & Verification
 
