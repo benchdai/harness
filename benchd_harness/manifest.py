@@ -7,6 +7,12 @@ from datetime import datetime, timezone
 from typing import List, Dict, Any, Optional
 from dataclasses import dataclass, field, asdict
 
+from benchd_harness.scoring.interpretation import (
+    build_structured_score,
+    compute_interpretation,
+    compute_score_status,
+)
+
 
 @dataclass
 class TraceRecord:
@@ -195,8 +201,41 @@ def build_manifest(
         sum(t.hallucination_risk for t in traces) / retrieval_total if retrieval_total > 0 else 0.0
     )
 
+    # Compute interpretation at scoring time (persisted, not re-computed in UI)
+    overall_score = verified_overall if verified_overall is not None else nuance_overall
+    score_status = compute_score_status(
+        scored_questions=scored_questions,
+        total_questions=total_questions,
+    )
+    interpretation = compute_interpretation(
+        raw_value=overall_score,
+        capability_claim="claimed",  # if we're scoring it, capability is claimed
+        sub_dimensions=[],  # top-level; sub-dimensions handled per-metric
+    )
+
+    # Build structured score metadata for the manifest
+    structured_score = build_structured_score(
+        metric_id=benchmark_slug,
+        metric_version=benchmark_version,
+        track_id="baseline",  # default; overridden by caller if track is known
+        raw_value=overall_score,
+        status=score_status,
+        capability_claim="claimed",
+        sub_dimensions=[],
+        run_id=run_id,
+        harness_version=harness_version,
+        judge_model=judge_metadata.get("judge_model", "deterministic") if judge_metadata else "deterministic",
+        judge_temperature=judge_metadata.get("temperature", 0.0) if judge_metadata else 0.0,
+        adapter_version=adapter_version or "unknown",
+        runtime_class="S1",  # default tier
+        scored_at=completed_at.isoformat(),
+        sample_size=scored_questions,
+        questions_total=total_questions,
+        methodology_url=f"https://benchd.ai/methodology/metrics/{benchmark_slug}",
+    )
+
     return {
-        "version": "1.0.0",
+        "version": "1.1.0",
         "run_id": run_id,
         "system": {
             "name": system_name,
@@ -255,6 +294,9 @@ def build_manifest(
             "abstained_count": abstained_count,
         },
         "traces": [asdict(t) for t in traces],
+        # Structured score metadata (persisted at scoring time)
+        "structured_score": structured_score,
+        "interpretation": interpretation,
     }
 
 

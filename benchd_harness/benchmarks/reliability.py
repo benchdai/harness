@@ -11,7 +11,7 @@ All scoring is deterministic (no LLM judge needed). Each item is a trap
 with a known correct behavior.
 """
 
-from typing import List
+from typing import List, Optional
 
 from benchd_harness.benchmarks.base import BaseBenchmark, BenchmarkItem
 
@@ -391,7 +391,7 @@ class ReliabilityBenchmark(BaseBenchmark):
             "entity confusion, and deletion compliance."
         )
 
-    def __init__(self, max_items: int | None = None):
+    def __init__(self, max_items: Optional[int] = None):
         self._max_items = max_items
 
     def load_items(self) -> List[BenchmarkItem]:

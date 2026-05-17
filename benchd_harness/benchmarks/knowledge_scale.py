@@ -11,7 +11,7 @@ Measures: accuracy, latency degradation, false positive rate.
 """
 
 import uuid
-from typing import List
+from typing import List, Optional
 
 from benchd_harness.benchmarks.base import BaseBenchmark, BenchmarkItem
 
@@ -125,7 +125,7 @@ class KnowledgeScaleBenchmark(BaseBenchmark):
     def description(self) -> str:
         return "Tests retrieval accuracy at 10, 50, and 100 stored pages."
 
-    def __init__(self, max_items: int | None = None):
+    def __init__(self, max_items: Optional[int] = None):
         self._max_items = max_items
 
     def load_items(self) -> List[BenchmarkItem]:

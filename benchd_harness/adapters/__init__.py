@@ -1,5 +1,7 @@
 """Adapter layer for Bench'd harness — pluggable memory system backends."""
 
+from typing import Optional
+
 from .base import BaseAdapter
 from .echo import EchoAdapter
 from .null import NullAdapter
@@ -202,7 +204,7 @@ _BUILTIN_ADAPTERS["mcp"] = MCPAdapter
 __all__ = [*__all__, "MCPAdapter"]
 
 
-def get_adapter(name: str, adapter_config: dict | None = None) -> BaseAdapter:
+def get_adapter(name: str, adapter_config: Optional[dict] = None) -> BaseAdapter:
     """
     Factory function that returns an adapter instance by name.
 

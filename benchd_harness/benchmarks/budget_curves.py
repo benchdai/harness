@@ -13,7 +13,7 @@ Tiers:
   - 10,000 tokens (unlimited)
 """
 
-from typing import List
+from typing import List, Optional
 from benchd_harness.benchmarks.base import BaseBenchmark, BenchmarkItem
 
 
@@ -91,7 +91,7 @@ class BudgetCurvesBenchmark(BaseBenchmark):
     def description(self) -> str:
         return "Tests accuracy at 500/1K/2K/5K/10K token budgets. Reveals precision vs brute-force."
 
-    def __init__(self, max_items: int | None = None):
+    def __init__(self, max_items: Optional[int] = None):
         self._max_items = max_items
 
     def load_items(self) -> List[BenchmarkItem]:

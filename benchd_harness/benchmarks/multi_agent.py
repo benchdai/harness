@@ -8,7 +8,7 @@ Three test suites for multi-agent and enterprise memory scenarios:
 3. Memory Poisoning (Item 6) — Adversarial ingest to corrupt future queries
 """
 
-from typing import List
+from typing import List, Optional
 from benchd_harness.benchmarks.base import BaseBenchmark, BenchmarkItem
 
 
@@ -218,7 +218,7 @@ class SemanticRBACBenchmark(BaseBenchmark):
     def description(self) -> str:
         return "Tests role-based access control: Agent A's data shouldn't leak to Agent B."
 
-    def __init__(self, max_items: int | None = None):
+    def __init__(self, max_items: Optional[int] = None):
         self._max_items = max_items
 
     def load_items(self) -> List[BenchmarkItem]:
@@ -257,7 +257,7 @@ class TruthArbitrationBenchmark(BaseBenchmark):
     def description(self) -> str:
         return "Tests whether systems resolve contradictory facts by using the most recent/authoritative version."
 
-    def __init__(self, max_items: int | None = None):
+    def __init__(self, max_items: Optional[int] = None):
         self._max_items = max_items
 
     def load_items(self) -> List[BenchmarkItem]:
@@ -295,7 +295,7 @@ class MemoryPoisoningBenchmark(BaseBenchmark):
     def description(self) -> str:
         return "Tests whether adversarial injection attempts can corrupt legitimate memories."
 
-    def __init__(self, max_items: int | None = None):
+    def __init__(self, max_items: Optional[int] = None):
         self._max_items = max_items
 
     def load_items(self) -> List[BenchmarkItem]:

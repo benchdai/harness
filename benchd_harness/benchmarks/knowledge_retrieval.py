@@ -9,7 +9,7 @@ These systems store documents/pages rather than conversation turns,
 so the test format is different from LongMemEval.
 """
 
-from typing import List
+from typing import List, Optional
 
 from benchd_harness.benchmarks.base import BaseBenchmark, BenchmarkItem
 
@@ -252,7 +252,7 @@ class KnowledgeRetrievalBenchmark(BaseBenchmark):
             "like gbrain, Graphiti, and Microsoft GraphRAG."
         )
 
-    def __init__(self, max_items: int | None = None):
+    def __init__(self, max_items: Optional[int] = None):
         self._max_items = max_items
 
     def load_items(self) -> List[BenchmarkItem]:

@@ -30,7 +30,10 @@ def cli():
 @click.option("--answerer-model", default="openai/gpt-4o-mini", help="Answerer LLM model ID")
 @click.option("--judge-model", default="openai/gpt-4o-mini", help="Judge LLM model ID")
 @click.option("--adapter-config", default=None, help="JSON string of adapter configuration (e.g., '{\"endpoint\": \"...\"}')")
-def run(adapter, benchmark, out, key, max_items, judge, answerer_model, judge_model, adapter_config):
+@click.option("--budget", type=float, default=None, help="Max budget in USD for ProofMeter spend tracking (e.g., 5.00)")
+@click.option("--pricing", type=click.Path(exists=True), default=None, help="Path to custom pricing JSON (for enterprise/bulk rates)")
+@click.option("--pricing-mode", type=click.Choice(["public", "usage-only"]), default="public", help="Pricing mode: 'public' (estimated list prices) or 'usage-only' (no cost calculation)")
+def run(adapter, benchmark, out, key, max_items, judge, answerer_model, judge_model, adapter_config, budget, pricing, pricing_mode):
     """Run a benchmark against a memory system adapter."""
     # Parse adapter config JSON
     parsed_adapter_config = None
@@ -75,6 +78,25 @@ def run(adapter, benchmark, out, key, max_items, judge, answerer_model, judge_mo
             judge_model=judge_model,
         )
 
+    # Configure pricing mode
+    if pricing_mode == "usage-only":
+        from benchd_harness.proofmeter.pricing import set_usage_only_mode
+        set_usage_only_mode()
+        click.echo("  Pricing: usage-only (no cost calculation)")
+    elif pricing:
+        try:
+            pricing_data = json.loads(Path(pricing).read_text())
+            from benchd_harness.proofmeter.pricing import set_custom_pricing
+            source = pricing_data.pop("_source", "customer_price_book")
+            book_id = pricing_data.pop("_price_book_id", None)
+            set_custom_pricing(pricing_data, source=source, price_book_id=book_id)
+            click.echo(f"  Pricing: custom ({source})")
+        except Exception as exc:
+            click.echo(click.style(f"Warning: Could not load pricing file: {exc}", fg="yellow"), err=True)
+
+    # Convert budget from USD to cents
+    budget_cents = int(budget * 100) if budget is not None else None
+
     # Create runner and execute
     runner = BenchmarkRunner(
         adapter=adapter_instance,
@@ -83,6 +105,7 @@ def run(adapter, benchmark, out, key, max_items, judge, answerer_model, judge_mo
         output_dir=output_dir,
         use_llm_judge=judge,
         llm_judge_config=llm_judge_config,
+        budget_cents=budget_cents,
     )
 
     try:
@@ -137,6 +160,22 @@ def run(adapter, benchmark, out, key, max_items, judge, answerer_model, judge_mo
     click.echo()
     click.echo(f"Questions: {total} total, {scored_count} scored, {pending_count} pending")
     click.echo(f"Passed: {click.style(str(passed), fg='green')} | Failed: {click.style(str(failed), fg='red')}")
+
+    # ProofMeter summary
+    proofmeter = manifest.get("proofmeter")
+    if proofmeter:
+        click.echo()
+        click.echo(click.style("  ProofMeter", fg="cyan", bold=True))
+        usage = proofmeter.get("proven_usage", {})
+        cost = proofmeter.get("cost_estimate", {})
+        settlement = proofmeter.get("settlement", {})
+        click.echo(f"  Usage:    {usage.get('total_tokens', 0):,} tokens (proven)")
+        click.echo(f"  Cost:     ~${cost.get('estimated_total_usd', '0.00')} ({cost.get('pricing_basis', 'list_price')}, estimated)")
+        click.echo(f"  Receipts: {proofmeter.get('receipt_count', 0)}")
+        click.echo(f"  Status:   {settlement.get('status', 'unknown')}")
+        if proofmeter.get("budget_exceeded"):
+            click.echo(click.style("  BUDGET EXCEEDED", fg="red", bold=True))
+
     click.echo()
     click.echo(f"Manifest saved: {click.style(str(manifest_path), fg='blue')}")
     click.echo(separator)
@@ -389,6 +428,43 @@ def adapter_validate(name):
         for issue in issues:
             click.echo(click.style(f"  - {issue}", fg="red"))
         sys.exit(1)
+
+
+@cli.command("baselines")
+@click.option("--runs-dir", "-r", type=click.Path(exists=True), default="./runs", help="Directory containing run results")
+@click.option("--cache", "-c", type=click.Path(), default="./baselines.json", help="Output cache file path")
+def baselines_cmd(runs_dir, cache):
+    """Recompute track baselines from all scored manifests."""
+    from benchd_harness.scoring.baselines import compute_all_baselines, save_baselines_cache
+
+    baselines = compute_all_baselines(Path(runs_dir))
+
+    # Count total systems
+    total_systems = set()
+    total_scores = 0
+    for track_data in baselines.values():
+        for metric_data in track_data.values():
+            total_systems.update(metric_data.get("systems", []))
+            total_scores += metric_data.get("sample_size", 0)
+
+    save_baselines_cache(baselines, Path(cache))
+
+    click.echo(click.style("Baselines computed", fg="green", bold=True))
+    click.echo(f"  Systems: {len(total_systems)}")
+    click.echo(f"  Scores:  {total_scores}")
+    click.echo(f"  Cache:   {click.style(cache, fg='blue')}")
+
+    # Print non-empty baselines
+    for track, metrics in baselines.items():
+        for metric, data in metrics.items():
+            if data.get("sample_size", 0) > 0:
+                click.echo(
+                    f"  {track}/{metric}: "
+                    f"mean={data['track_mean']:.1f} "
+                    f"p25={data['track_p25']:.1f} "
+                    f"p75={data['track_p75']:.1f} "
+                    f"(n={data['sample_size']})"
+                )
 
 
 def main():
