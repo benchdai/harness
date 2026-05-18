@@ -394,10 +394,10 @@ class BenchmarkRunner:
             return
 
         import os
-        api_key = os.environ.get("VS_API_KEY")
-        namespace = os.environ.get("VS_NAMESPACE")
+        api_key = os.environ.get("PROOFMETER_API_KEY") or os.environ.get("VS_API_KEY")
+        namespace = os.environ.get("PROOFMETER_NAMESPACE") or os.environ.get("VS_NAMESPACE")
         if not api_key or not namespace:
-            print("  [ProofMeter] Skipped — VS_API_KEY or VS_NAMESPACE not set")
+            print("  [ProofMeter] Skipped — PROOFMETER_API_KEY or PROOFMETER_NAMESPACE not set")
             return
 
         try:

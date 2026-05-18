@@ -41,10 +41,10 @@ class ProofMeterClient:
         namespace_id: Optional[str] = None,
         base_url: Optional[str] = None,
     ):
-        self._api_key = api_key or os.environ.get("VS_API_KEY", "")
-        self._namespace_id = namespace_id or os.environ.get("VS_NAMESPACE", "")
+        self._api_key = api_key or os.environ.get("PROOFMETER_API_KEY") or os.environ.get("VS_API_KEY", "")
+        self._namespace_id = namespace_id or os.environ.get("PROOFMETER_NAMESPACE") or os.environ.get("VS_NAMESPACE", "")
         self._base_url = base_url or os.environ.get(
-            "VS_API_BASE_URL", "https://api.verifiedstate.com/v1"
+            "PROOFMETER_BASE_URL", os.environ.get("VS_API_BASE_URL", "https://api.proofmeter.com")
         )
         self._session: Optional[requests.Session] = None
 
@@ -54,7 +54,7 @@ class ProofMeterClient:
         self._session.headers.update({
             "Authorization": f"Bearer {self._api_key}",
             "Content-Type": "application/json",
-            "User-Agent": "benchd-harness/proofmeter",
+            "User-Agent": "proofmeter-python/0.1.0 (benchd-harness)",
         })
 
     def close(self) -> None:
@@ -98,7 +98,7 @@ class ProofMeterClient:
         if task_id:
             payload["metadata"] = {"task_id": task_id, "source": "benchd-harness"}
 
-        data = self._post("/meter/authorize", payload)
+        data = self._post("/v1/capabilities", payload)
 
         return BudgetAuthorization(
             capability_id=data.get("capability_id", data.get("id", "")),
@@ -165,7 +165,7 @@ class ProofMeterClient:
         if metadata:
             payload["metadata"] = metadata
 
-        data = self._post("/meter/spend", payload)
+        data = self._post("/v1/receipts", payload)
 
         return SpendReceipt(
             receipt_id=data.get("receipt_id", data.get("id", "")),
@@ -194,7 +194,7 @@ class ProofMeterClient:
         Returns:
             Dict with remaining_cents, total_spent_cents, receipt_count, etc.
         """
-        return self._post("/meter/budget", {"capability_id": capability_id})
+        return self._post("/v1/budget/" + capability_id, {})
 
     # ─── Settlement ─────────────────────────────────────────────
 
@@ -219,7 +219,7 @@ class ProofMeterClient:
         if capability_id:
             payload["capability_id"] = capability_id
 
-        data = self._post("/meter/settle", payload)
+        data = self._post("/v1/settlements", payload)
 
         return Settlement(
             settlement_id=data.get("settlement_id", data.get("id", "")),
@@ -242,7 +242,7 @@ class ProofMeterClient:
         Returns:
             Dict with valid, hash_valid, signature_valid, chain_valid, etc.
         """
-        return self._post("/meter/verify", {"receipt_id": receipt_id})
+        return self._post("/v1/receipts/" + receipt_id + "/verify", {})
 
     # ─── Receipt Listing ────────────────────────────────────────
 
@@ -265,7 +265,7 @@ class ProofMeterClient:
         if actor_id:
             payload["actor_id"] = actor_id
 
-        data = self._post("/meter/receipts", payload)
+        data = self._post("/v1/receipts", payload)
         if isinstance(data, list):
             return data
         return data.get("receipts", data.get("results", []))
