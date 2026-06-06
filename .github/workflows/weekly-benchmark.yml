@@ -48,6 +48,12 @@ jobs:
           docker run -d --name letta -p 8283:8283 letta/letta:latest
           sleep 30  # wait for startup
 
+      - name: Write signing key
+        run: |
+          mkdir -p ./keys
+          echo "${{ secrets.BENCHD_SIGNING_KEY }}" > ./keys/private.key
+          chmod 600 ./keys/private.key
+
       - name: Run auto-benchmark
         env:
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
